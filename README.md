@@ -1,2 +1,2 @@
 # Otus_network_proff
-Otus_network_proff
+### Репозиторий лабораторных работ курса "Сетевой инженер" в OTUS.ru.
