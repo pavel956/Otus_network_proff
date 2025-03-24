@@ -6,6 +6,7 @@
 ![](схема6.png)
 
 Таблица адресации.
+
 ![](adres.png)
 
 
@@ -34,6 +35,7 @@ ipv6 unicast-routing
 </code></pre>
 
 проверяем состояние IPv6 на PC Win7
+
 ![](Win7_SLAAC.png)
 
 Откуда взялась часть адреса с идентификатором хоста? - _В данном случае заполнилось автоматически случайным образом.
@@ -53,6 +55,7 @@ R1(config-if)# ipv6 nd other-config-flag
 R1(config-if)# ipv6 dhcp server R1-STATELESS
 </code></pre>
 проверяем на PC win7
+
 ![](Win7_DHCP_1.png)
 
 Включение протокола DHCPv6 с поддержкой
@@ -76,6 +79,7 @@ interface GigabitEthernet0/1
  </code></pre>
 
 проверяем состояние  DHCP на PC win8
+
 ![](Win8.png)
 
 Pезультат команды ping c win8 в сторону win7 и в сторону R1 g0/1
