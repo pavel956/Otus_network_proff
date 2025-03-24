@@ -28,13 +28,46 @@
  192.168.1.96/28
  записываем первый адрес подсети С в таблицу G/0/1 R2
 
-делаем стартовые настройки на всех узлах
-![](start.png)
+- делаем стартовые настройки на всех узлах
+- настраиваем сабинтерфейсы на G0/1 R1
+- настраиваем G0/1 R2
+- настраиваем статическую маршрутизацию между R1 и R2 через порты G0/0
+- настраиваем влан на S1 
+- настраивам транк порт S1
 
-настраиваем сабинтерфейсы на G0/1 R1
-![](gi0_1.png)
+Настраиваем DHCP на R1 результат настроек
+ <pre><code>R1#show running-config | section dhcp   
+ ip dhcp excluded-address 192.168.1.1 192.168.1.5  
+ ip dhcp excluded-address 192.168.1.97 192.168.1.101
+ ip dhcp pool R1_1
+  network 192.168.1.0 255.255.255.192
+  domain-name ccna-lab.com
+  default-router 192.168.1.1
+  lease 2 12 30
+ ip dhcp pool R1_2
+  network 192.168.1.96 255.255.255.240
+  default-router 192.168.1.97
+  domain-name ccna-lab.com
+  lease 2 12 30
+</code></pre>
 
-настраиваем G0/1 R2
- interface GigabitEthernet0/1
- description TO_S2
- ip address 192.168.1.97 255.255.255.240
+Включаем DHCP клиента на PC1, пингуем G0/1 R1
+<pre><code> 
+VPCS> ip dhcp
+DDORA IP 192.168.1.6/26 GW 192.168.1.1
+VPCS> ping 192.168.1.1
+
+84 bytes from 192.168.1.1 icmp_seq=1 ttl=255 time=7.275 ms
+84 bytes from 192.168.1.1 icmp_seq=2 ttl=255 time=5.297 ms
+84 bytes from 192.168.1.1 icmp_seq=3 ttl=255 time=5.461 ms
+84 bytes from 192.168.1.1 icmp_seq=4 ttl=255 time=6.301 ms
+84 bytes from 192.168.1.1 icmp_seq=5 ttl=255 time=4.949 ms
+</code></pre>
+
+Включаем ретрансляцию на R2 
+<pre><code> 
+R2(config)#interface gigabitEthernet 0/1
+R2(config-if)#ip helper-address 10.0.0.1
+R2(config-if)#end
+R2#wr
+</code></pre>
