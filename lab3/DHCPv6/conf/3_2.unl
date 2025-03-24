@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<lab name="3_2" version="1" scripttimeout="300" lock="0">
+  <topology>
+    <nodes>
+      <node id="1" name="R1" type="qemu" template="vios" image="vios-15.5.3M" console="telnet" cpu="1" cpulimit="0" ram="1024" ethernet="4" uuid="85cd50a5-778a-405e-bf95-4044ad8fecb6" qemu_options="-machine type=pc-1.0,accel=kvm -serial mon:stdio -nographic -no-user-config -nodefaults -rtc base=utc" qemu_version="2.4.0" qemu_arch="i386" delay="0" icon="Router.png" config="0" left="687" top="177">
+        <interface id="0" name="Gi0/0" type="ethernet" network_id="1"/>
+        <interface id="1" name="Gi0/1" type="ethernet" network_id="3"/>
+      </node>
+      <node id="2" name="R2" type="qemu" template="vios" image="vios-15.5.3M" console="telnet" cpu="1" cpulimit="0" ram="1024" ethernet="4" uuid="a6ec3d13-b464-4ed6-81f3-3fc9e20bd746" qemu_options="-machine type=pc-1.0,accel=kvm -serial mon:stdio -nographic -no-user-config -nodefaults -rtc base=utc" qemu_version="2.4.0" qemu_arch="i386" delay="0" icon="Router.png" config="0" left="894" top="174">
+        <interface id="0" name="Gi0/0" type="ethernet" network_id="1"/>
+        <interface id="1" name="Gi0/1" type="ethernet" network_id="2"/>
+      </node>
+      <node id="3" name="S1" type="qemu" template="viosl2" image="viosl2-15.2.4.55e" console="telnet" cpu="1" cpulimit="0" ram="1024" ethernet="8" uuid="d4848cd3-6e5b-4f3b-ac49-c3306c7bae00" qemu_options="-machine type=pc-1.0,accel=kvm -serial mon:stdio -nographic -no-user-config -nodefaults -rtc base=utc" qemu_version="2.4.0" qemu_arch="i386" delay="0" icon="Switch.png" config="0" left="444" top="177">
+        <interface id="0" name="Gi0/0" type="ethernet" network_id="6"/>
+        <interface id="3" name="Gi0/3" type="ethernet" network_id="5"/>
+        <interface id="7" name="Gi1/3" type="ethernet" network_id="3"/>
+      </node>
+      <node id="4" name="S2" type="qemu" template="viosl2" image="viosl2-15.2.4.55e" console="telnet" cpu="1" cpulimit="0" ram="1024" ethernet="8" uuid="86f6ddd7-a56b-426f-8ba5-2fb4e1d7b8f3" qemu_options="-machine type=pc-1.0,accel=kvm -serial mon:stdio -nographic -no-user-config -nodefaults -rtc base=utc" qemu_version="2.4.0" qemu_arch="i386" delay="0" icon="Switch.png" config="0" left="1110" top="171">
+        <interface id="0" name="Gi0/0" type="ethernet" network_id="7"/>
+        <interface id="3" name="Gi0/3" type="ethernet" network_id="2"/>
+        <interface id="7" name="Gi1/3" type="ethernet" network_id="4"/>
+      </node>
+      <node id="5" name="VPC5" type="vpcs" template="vpcs" image="" ethernet="1" delay="0" icon="Desktop.png" config="0" left="198" top="168">
+        <interface id="0" name="eth0" type="ethernet" network_id="5"/>
+      </node>
+      <node id="6" name="VPC6" type="vpcs" template="vpcs" image="" ethernet="1" delay="0" icon="Desktop.png" config="0" left="1398" top="165">
+        <interface id="0" name="eth0" type="ethernet" network_id="4"/>
+      </node>
+      <node id="7" name="Win7" type="qemu" template="win" image="win-7-x86-IPCC" console="vnc" cpu="1" cpulimit="0" ram="4096" ethernet="1" uuid="6db9b03a-73ff-46d4-8473-238b4ab97a63" qemu_options="-machine type=pc,accel=kvm -cpu host,+fsgsbase -vga std -usbdevice tablet -boot order=cd -drive file=/opt/qemu/share/qemu/virtio-win-drivers.img,index=1,if=floppy,readonly" qemu_version="2.12.0" qemu_arch="x86_64" delay="0" icon="Desktop.png" config="0" left="450" top="339">
+        <interface id="0" name="e0" type="ethernet" network_id="6"/>
+      </node>
+      <node id="8" name="Win8" type="qemu" template="win" image="win-7-x86-IPCC" console="vnc" cpu="1" cpulimit="0" ram="4096" ethernet="1" uuid="25e613f8-fa69-4c81-bbb1-1d80169af92b" qemu_options="-machine type=pc,accel=kvm -cpu host,+fsgsbase -vga std -usbdevice tablet -boot order=cd -drive file=/opt/qemu/share/qemu/virtio-win-drivers.img,index=1,if=floppy,readonly" qemu_version="2.12.0" qemu_arch="x86_64" delay="0" icon="Desktop.png" config="0" left="1119" top="339">
+        <interface id="0" name="e0" type="ethernet" network_id="7"/>
+      </node>
+    </nodes>
+    <networks>
+      <network id="1" type="bridge" name="Net-vIOS1iface_0" left="747" top="217" visibility="0"/>
+      <network id="2" type="bridge" name="Net-vIOS2iface_1" left="954" top="214" visibility="0"/>
+      <network id="3" type="bridge" name="Net-vIOS1iface_1" left="747" top="217" visibility="0"/>
+      <network id="4" type="bridge" name="Net-Switch4iface_7" left="1170" top="211" visibility="0"/>
+      <network id="5" type="bridge" name="Net-Switch3iface_3" left="504" top="217" visibility="0"/>
+      <network id="6" type="bridge" name="Net-Win7iface_0" left="435" top="292" visibility="0"/>
+      <network id="7" type="bridge" name="Net-Win8iface_0" left="307" top="334" visibility="0"/>
+    </networks>
+  </topology>
+</lab>
