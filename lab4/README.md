@@ -18,6 +18,7 @@
 Схема лабараторного стенда в draw.io
 
 ![](схема.png)
+Используем IP4
 
 Таблица адресации Москва.
 ![](Moskva.png)
@@ -76,13 +77,11 @@ end
 wr
 </code></pre>
 
-Поскольку 
-
-
-
 Поскольку в установке используются L3 коммутатроы, то чтобы не возникало broadcast штормов, а использование линков было максимально оптимизировано будем использвать их в архитектуре Layer 3 Access Layer
 
 ![](L3.png)
+
+
 Преимущества использования:
 - Нет STP
 - Нет протоколов FHRP – HSRP/VRRP/GLBP
@@ -91,6 +90,48 @@ wr
 -  Быстрая сходимость
 
 между SW4 SW5 и SW9 SW10 используем агрегирование LACP
+пример нстройки SW9
+<pre><code>
+en
+conf t
+interface Loopback0
+ ip address 10.10.11.9 255.255.255.255
+no shut
+interface Port-channel1
+ no switchport
+ ip address 10.220.33.13 255.255.255.252
+no shut
+ interface Ethernet0/0
+ no switchport
+ no ip address
+ duplex auto
+ channel-group 1 mode active
+interface Ethernet0/1
+ no switchport
+ no ip address
+ duplex auto
+ channel-group 1 mode active
+interface Ethernet0/2
+ description TO_VPC8
+ switchport access vlan 80
+ switchport mode access
+ spanning-tree portfast
+interface Ethernet0/3
+ description SW9_to_R17
+ no switchport
+ ip address 10.220.33.17 255.255.255.252
+ duplex auto
+interface Ethernet1/0
+ description SW9_to_R16
+ no switchport
+ ip address 10.220.33.21 255.255.255.252
+ duplex auto
+
+interface Vlan80
+ ip address 192.168.80.1 255.255.255.0
+end
+wr
+</code></pre>
 
 
  
