@@ -62,13 +62,13 @@ interface Ethernet0/2
  description LAG_to_SW4
  no switchport
  no ip address
- channel-group 1 mode on
+ channel-group 1 mode active
 !
 interface Ethernet0/3
  description LAG_to_SW4
  no switchport
  no ip address
- channel-group 1 mode on
+ channel-group 1 mode actve
 !
 interface Ethernet1/0
  no switchport

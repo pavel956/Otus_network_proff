@@ -64,14 +64,14 @@ interface Ethernet0/2
  description LAG_to_SW5
  no switchport
  no ip address
- channel-group 1 mode on
+ channel-group 1 mode active
 !
 interface Ethernet0/3
  description LAG_to_SW5
  no switchport
  no ip address
  duplex auto
- channel-group 1 mode on
+ channel-group 1 mode active
 !
 interface Ethernet1/0
  description SW4_to_R12
