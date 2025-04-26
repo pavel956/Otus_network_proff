@@ -51,7 +51,8 @@ track 10 ip sla 1 reachability
 track 30 ip sla 3 reachability
 </code></pre>
 
-- Создаем route-map для разделения трафика между линками и отслеживания состояния соединения через TRACK
+- Создаем route-map для разделения трафика между линками и отслеживания состояния соединения через TRACK.
+
 route-map TO_R26 - работает для подсети VPC30 и устанавливает next-hop приоритнее в сторону R26- при его доступногсти по Track 30, а  при недоступности переключается на маршрут в сторону R25(172.16.5.33 20 track 10)
 Для подсети VPC31 работает другой route-map с обратным приоритетом.
 
@@ -74,12 +75,12 @@ route-map TO_R25 permit 10
 interface Ethernet0/2.30
  encapsulation dot1Q 30
  ip address 192.168.30.1 255.255.255.0
- ip policy route-map TO_R25
+ ip policy route-map TO_R26
 
 interface Ethernet0/2.31
  encapsulation dot1Q 31
  ip address 192.168.31.1 255.255.255.0
- ip policy route-map TO_R26
+ ip policy route-map TO_R25
 </code></pre>
 
 - Прописывет маршрут по умолчани Лабытнанги
@@ -127,3 +128,4 @@ ip route 192.168.33.0 255.255.255.0 Ethernet0/1</code></pre>
 Фиксируем- что для VPC31 маршрут изменился, VPC30 - остался неизменным
 
 
+- [конфигурация узлов и лабараторная в EVE ](conf/)
