@@ -104,11 +104,13 @@ ip route 192.168.33.0 255.255.255.0 Ethernet0/1</code></pre>
 
 <img src="VPC31_TEST.png" alt="image" width="50%" height="auto">
 
-<img src="VPC30_TEST.png" alt="image" width="50%" height="auto">
+
+<img src="VPC30_Test.png" alt="image" width="50%" height="auto">
 
 состояние SLA на R28 в этот момент
 
 <img src="SLA_summ1.png" alt="image" width="50%" height="auto">
+
 
 <img src="ipsla_stat1.png" alt="image" width="50%" height="auto">
 
