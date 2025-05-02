@@ -1,0 +1,128 @@
+hostname R14
+!
+boot-start-marker
+boot-end-marker
+!
+!
+!
+no aaa new-model
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!
+!
+!
+!
+!
+!
+!
+!
+
+
+!
+!
+!
+!
+ip cef
+no ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+!
+!
+!
+redundancy
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Loopback0
+ ip address 10.10.11.14 255.255.255.255
+!
+interface Ethernet0/0
+ description R14_t0_R12
+ ip address 10.220.32.6 255.255.255.252
+!
+interface Ethernet0/1
+ description R14_t0_R13
+ ip address 10.220.32.10 255.255.255.252
+!
+interface Ethernet0/2
+ description R14_to_R22
+ ip address 172.16.5.1 255.255.255.252
+!
+interface Ethernet0/3
+ description R14_t0_R19
+ ip address 10.220.32.2 255.255.255.252
+!
+interface Ethernet1/0
+ description R14_to_R15
+ ip address 10.220.32.61 255.255.255.252
+ ip ospf 1 area 0
+!
+interface Ethernet1/1
+ no ip address
+ shutdown
+!
+interface Ethernet1/2
+ no ip address
+ shutdown
+!
+interface Ethernet1/3
+ no ip address
+ shutdown
+!
+router ospf 1
+ router-id 10.10.11.14
+ area 10 stub
+ area 101 stub no-summary
+ network 10.10.11.14 0.0.0.0 area 0
+ network 10.220.32.0 0.0.0.3 area 101
+ network 10.220.32.4 0.0.0.3 area 10
+ network 10.220.32.8 0.0.0.3 area 10
+ default-information originate
+!
+ip forward-protocol nd
+!
+!
+no ip http server
+no ip http secure-server
+!
+!
+!
+!
+control-plane
+!
+!
+!
+!
+!
+!
+!
+!
+line con 0
+ logging synchronous
+line aux 0
+line vty 0 4
+ login
+ transport input none
+!
+!
+end

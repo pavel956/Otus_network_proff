@@ -132,3 +132,4 @@ R14
 <img src="Ip_route_R20_after.png" alt="image" width="70%" height="auto">
 
 
+- [конфигурация узлов](conf/)
