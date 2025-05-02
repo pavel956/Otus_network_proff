@@ -68,4 +68,67 @@ router ospf 1
  network 10.10.11.19 0.0.0.0 area 101
  network 10.220.32.0 0.0.0.3 area 101</code></pre>
 
-4.  Маршрутизатор R20 находится в зоне 102 и получает все маршруты, кроме маршрутов до сетей зоны 101. R20 находится в normal area, необходимо настроить фильтрацию маршрутов зоны 101. Фильтацию производим на маршрутизаторе R15
+4.  Маршрутизатор R20 находится в зоне 102 и получает все маршруты, кроме маршрутов до сетей зоны 101. R20 находится в normal area, необходимо настроить фильтрацию маршрутов зоны 101. Фильтрацию производим на маршрутизаторе R15.Запрещаем сети из 101 зоны, последней командой разрешаем все остальные адреса. 
+
+R15
+<pre><code> ip prefix-list FILTER-AREA101 seq 10 deny 10.220.32.0/30
+ip prefix-list FILTER-AREA101 seq 15 deny 10.10.11.19/32
+ip prefix-list FILTER-AREA101 seq 20 permit 0.0.0.0/0 le 32
+</code></pre>
+
+Применяем фильтрацию на R15 на вход, итоговая настройка OSPF R15
+<pre><code> router ospf 1
+ router-id 10.10.11.15
+ area 10 stub
+ area 101 stub no-summary
+ area 102 filter-list prefix FILTER-AREA101 in
+ network 10.10.11.15 0.0.0.0 area 0
+ network 10.220.32.12 0.0.0.3 area 10
+ network 10.220.32.16 0.0.0.3 area 10
+ network 10.220.32.20 0.0.0.3 area 102
+ default-information originate
+ 
+ interface Ethernet1/0
+ description R15_to_R14
+ ip address 10.220.32.62 255.255.255.252
+ ip ospf 1 area 0
+</code></pre>
+
+R14
+<pre><code>router ospf 1
+ router-id 10.10.11.14
+ area 10 stub
+ area 101 stub no-summary
+ network 10.10.11.14 0.0.0.0 area 0
+ network 10.220.32.0 0.0.0.3 area 101
+ network 10.220.32.4 0.0.0.3 area 10
+ network 10.220.32.8 0.0.0.3 area 10
+ default-information originate
+ 
+ interface Ethernet1/0
+ description R14_to_R15
+ ip address 10.220.32.61 255.255.255.252
+ ip ospf 1 area 0
+</code></pre>
+
+
+Настройки OSPF и итоговаяя таблица маршрутов R20
+<pre><code>router ospf 1
+ router-id 10.10.11.20
+ network 10.10.11.20 0.0.0.0 area 102
+ network 10.220.32.20 0.0.0.3 area 102
+</code></pre>
+
+схема 101 сети
+
+<img src="Area101.png" alt="image" width="50%" height="auto">
+
+До применения филтрации на R15
+
+<img src="Ip_route_R20_before.png" alt="image" width="70%" height="auto">
+
+после применения фильтрации на R15
+
+<img src="Ip_route_R20_after.png" alt="image" width="70%" height="auto">
+
+
