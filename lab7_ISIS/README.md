@@ -19,7 +19,7 @@ ________________________________________________________
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="triada.png" alt="image" width="50%" height="auto">
  
-1. Поскольку сеть триада является траниитной,  для отказоустойчивости все маршрутизаторы будут L1-2/
+1. Поскольку сеть триада является транизитной,  для отказоустойчивости и масшатбируемости все маршрутизаторы будут L1-2.
 2. пример настройки R23 
 
 <pre><code>router ospf 1
@@ -63,18 +63,26 @@ router isis
 
 R23
 
-<img src="ping23.png" alt="image" width="50%" height="auto">
+<img src="ping23.png" alt="image" width="80%" height="auto">
 
 R24
 
-<img src="R24_isis_database.png" alt="image" width="50%" height="auto">
+<img src="R24_isis_database.png" alt="image" width="80%" height="auto">
 
 
 R25
 
-<img src="R25_ip_Route.png" alt="image" width="50%" height="auto">
+<img src="R25_ip_Route.png" alt="image" width="80%" height="auto">
 
 R26
 
 
-<img src="R26_ip_route_isis.png" alt="image" width="50%" height="auto">
+<img src="R26_ip_route_isis.png" alt="image" width="80%" height="auto">
+
+
+
+
+
+
+[эскперементальная часть(для себя)](1/ "не жми")
+
