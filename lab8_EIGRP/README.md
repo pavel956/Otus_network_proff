@@ -39,11 +39,13 @@ router eigrp BUBLIK
    summary-address 0.0.0.0 0.0.0.0 </code></pre>
 проверяем работу:
 
-до включения суммарного маршрута. Таблица маршрутизации на R32
+до включения суммарного маршрута. 
+Таблица маршрутизации на R32
 
  <img src="R32_before.png" alt="image" width="80%" height="auto">
 
 включаем, проверяем
+
 <img src="R32_after.png" alt="image" width="80%" height="auto">
 
 3. Передаем только суммарные маршруты на R16 в сторону R18
