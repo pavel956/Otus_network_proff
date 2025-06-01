@@ -17,7 +17,8 @@ ________________________________________________________
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="shem.png" alt="image" width="60%" height="auto">
  
-1. Настройки named EIGRP на примере R18
+1. Настройки named EIGRP на примере R18.
+
 Задаем имя EIGRP процесса
 <pre><code>
 router eigrp BUBLIK
@@ -36,7 +37,8 @@ router eigrp BUBLIK
 2. Для передачи в сторону R32 только default маршрута при настройке EIGRP на R16 используем суммаризацию с анонсированием только default.
   <pre><code>af-interface Ethernet0/3
    summary-address 0.0.0.0 0.0.0.0 </code></pre>
-проверяем работу
+проверяем работу:
+
 до включения суммарного маршрута. Таблица маршрутизации на R32
 
  <img src="R32_before.png" alt="image" width="80%" height="auto">
@@ -49,16 +51,18 @@ router eigrp BUBLIK
    summary-address 10.10.11.0 255.255.255.0
    summary-address 10.220.33.0 255.255.255.0
    summary-address 192.168.0.0 255.255.0.0</code></pre>
+
 проверяем
 до суммаризации
 
  <img src="R18_no_summ_fromR16.png" alt="image" width="80%" height="auto">
 
 включаем, проверяем
+
 <img src="R18_summ_fromR16.png" alt="image" width="80%" height="auto">
 
 пингуем VPC со стороны R18
-включаем, проверяем
+
 <img src="PingR18_VPC.png" alt="image" width="80%" height="auto">
 
 полная настройка EIGRP на R16, R17
