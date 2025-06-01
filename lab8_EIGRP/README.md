@@ -55,9 +55,13 @@ router eigrp BUBLIK
 проверяем
 до суммаризации
 
+
  <img src="R18_no_summ_fromR16.png" alt="image" width="80%" height="auto">
 
+
 включаем, проверяем
+
+
 
 <img src="R18_summ_fromR16.png" alt="image" width="80%" height="auto">
 
