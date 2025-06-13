@@ -14,7 +14,7 @@ ________________________________________________________
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="shem.png" alt="image" width="60%" height="auto">
  
-1. начальные настройки BGP на примере R14 В сторону Киторн
+Начальные настройки BGP на примере R14 В сторону Киторн
 <pre><code>
 router bgp 1001
   neighbor 172.16.5.2 remote-as 101
