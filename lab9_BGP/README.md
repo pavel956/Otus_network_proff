@@ -86,6 +86,9 @@ Dblbv - loopback R14 пингуется только с сурсом, несмо
 
 
 таблица маршрутизации на R14
+
+
+
 <img src="R14_ip_route_v2.png" alt="image" width="60%" height="auto">
 
 
