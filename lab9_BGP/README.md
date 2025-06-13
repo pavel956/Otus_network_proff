@@ -53,15 +53,24 @@ Dblbv - loopback R14 пингуется только с сурсом, несмо
 
 пинг с сурс
 
+
 <img src="wireshark2.png" alt="image" width="60%" height="auto">
 
+
 В таблице маршрутизации R14 нет маршрута к ip 172.16.5.22 интерфейса источника эхо запроса, поэтому пингуется только после смены source на адрес loo R18
+
+
+
 <img src="R14_ip_bgp_1.png" alt="image" width="60%" height="auto">
 
 
 <img src="R14_ip_route.png" alt="image" width="60%" height="auto">
 
-добавим сеть интерфейса e0/2 на R18 в BGP, насстройки BGP на R18 теперь 
+
+добавим сеть интерфейса e0/2 на R18 в BGP, насстройки BGP на R18 теперь
+
+
+
 <pre><code>router bgp 2042
  bgp log-neighbor-changes
  network 10.10.11.18 mask 255.255.255.255
@@ -70,10 +79,14 @@ Dblbv - loopback R14 пингуется только с сурсом, несмо
  neighbor 172.16.5.25 remote-as 520</code></pre>
 
 Проверяем доступность R14
+
+
+
 <img src="ping_R18_to_R14_v2.png" alt="image" width="60%" height="auto">
+
 
 таблица маршрутизации на R14
 <img src="R14_ip_route_v2.png" alt="image" width="60%" height="auto">
 
-к
+
  [конфигурация узлов](conf/)
