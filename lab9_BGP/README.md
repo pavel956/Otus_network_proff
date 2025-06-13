@@ -15,8 +15,7 @@ ________________________________________________________
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="shem.png" alt="image" width="60%" height="auto">
  
 Начальные настройки BGP на примере R14 В сторону Киторн
-<pre><code>
-router bgp 1001
+<pre><code>router bgp 1001
   neighbor 172.16.5.2 remote-as 101
 </code></pre>
 
@@ -28,14 +27,19 @@ router bgp 1001
 
 проверяем таблицу BGP после настройки на всех маршрутизаторах
 
+
+
 <img src="R14_ip_bgp_1.png" alt="image" width="60%" height="auto">
+
+
 
 <img src="R18_sh_ip_sum.png" alt="image" width="60%" height="auto">
 
 проверяем связность со стороны R18 в сторону R14
+
 <img src="ping_R18_to_R14.png" alt="image" width="60%" height="auto">
 
-loopback R14 пингуется только с сурсом, несмотря на то что в таблице маршрутизации сеть loo R14 есть
+Dblbv - loopback R14 пингуется только с сурсом, несмотря на то что в таблице маршрутизации сеть loo R14 есть
 <img src="ip_route.png" alt="image" width="60%" height="auto">
 
 <img src="R18_sh_rou_ipbgp.png" alt="image" width="60%" height="auto">
