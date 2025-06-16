@@ -41,7 +41,7 @@ ________________________________________________________
 
 <img src="ping_R18_to_R14.png" alt="image" width="60%" height="auto">
 
-Dblbv - loopback R14 пингуется только с сурсом, несмотря на то что в таблице маршрутизации сеть loo R14 есть
+Видим - loopback R14 пингуется только с сурсом, несмотря на то что в таблице маршрутизации сеть loo R14 есть
 <img src="ip_route.png" alt="image" width="60%" height="auto">
 
 <img src="R18_sh_rou_ipbgp.png" alt="image" width="60%" height="auto">
