@@ -1,0 +1,87 @@
+R15# show ip bgp
+BGP table version is 51, local router ID is 10.10.11.15
+Status codes: s suppressed, d damped, h history, * valid, > best, i - internal,
+              r RIB-failure, S Stale, m multipath, b backup-path, f RT-Filter,
+              x best-external, a additional-path, c RIB-compressed,
+Origin codes: i - IGP, e - EGP, ? - incomplete
+RPKI validation codes: V valid, I invalid, N Not found
+
+     Network          Next Hop            Metric LocPrf Weight Path
+ r>i 10.10.11.14/32   10.10.11.14              0    100      0 i
+ *>  10.10.11.15/32   0.0.0.0                  0         32768 i
+ *>  10.10.11.18/32   172.16.5.6                    800      0 301 520 2042 i
+ *>  10.10.11.21/32   172.16.5.6               0    800      0 301 i
+ *>i 172.16.5.0/30    10.10.11.14              0    100      0 i
+ *>  192.168.0.0      172.16.5.6                    800      0 301 520 2042 i
+ * i 192.168.10.0     10.220.32.5             31    100      0 i
+ *>                   10.220.32.13            31         32768 i
+ *>  192.168.30.0     172.16.5.6                    800      0 301 520 i
+ *>  192.168.31.0     172.16.5.6                    800      0 301 520 i
+ * i 192.168.70.0     10.220.32.5             31    100      0 i
+ *>                   10.220.32.13            31         32768 i
+ *>  192.168.80.0     172.16.5.6                    800      0 301 520 2042 i
+R15#show ip route
+Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
+       D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area
+       N1 - OSPF NSSA external type 1, N2 - OSPF NSSA external type 2
+       E1 - OSPF external type 1, E2 - OSPF external type 2
+       i - IS-IS, su - IS-IS summary, L1 - IS-IS level-1, L2 - IS-IS level-2
+       ia - IS-IS inter area, * - candidate default, U - per-user static route
+       o - ODR, P - periodic downloaded static route, H - NHRP, l - LISP
+       a - application route
+       + - replicated route, % - next hop override
+
+Gateway of last resort is not set
+
+      10.0.0.0/8 is variably subnetted, 30 subnets, 2 masks
+O        10.10.11.2/32 [110/31] via 10.220.32.17, 09:50:45, Ethernet0/0
+                       [110/31] via 10.220.32.13, 00:20:02, Ethernet0/1
+O        10.10.11.3/32 [110/31] via 10.220.32.17, 00:20:12, Ethernet0/0
+                       [110/31] via 10.220.32.13, 00:20:02, Ethernet0/1
+O        10.10.11.4/32 [110/21] via 10.220.32.17, 00:20:02, Ethernet0/0
+                       [110/21] via 10.220.32.13, 00:19:23, Ethernet0/1
+O        10.10.11.5/32 [110/21] via 10.220.32.17, 09:50:55, Ethernet0/0
+                       [110/21] via 10.220.32.13, 00:20:02, Ethernet0/1
+O        10.10.11.12/32 [110/11] via 10.220.32.13, 00:20:02, Ethernet0/1
+O        10.10.11.13/32 [110/11] via 10.220.32.17, 09:50:55, Ethernet0/0
+O        10.10.11.14/32 [110/11] via 10.220.32.61, 09:51:09, Ethernet1/0
+C        10.10.11.15/32 is directly connected, Loopback0
+B        10.10.11.18/32 [20/0] via 172.16.5.6, 00:43:09
+B        10.10.11.21/32 [20/0] via 172.16.5.6, 08:21:46
+O IA     10.220.32.0/30 [110/20] via 10.220.32.61, 09:51:09, Ethernet1/0
+O        10.220.32.4/30 [110/20] via 10.220.32.13, 00:20:02, Ethernet0/1
+O        10.220.32.8/30 [110/20] via 10.220.32.17, 09:50:55, Ethernet0/0
+C        10.220.32.12/30 is directly connected, Ethernet0/1
+L        10.220.32.14/32 is directly connected, Ethernet0/1
+C        10.220.32.16/30 is directly connected, Ethernet0/0
+L        10.220.32.18/32 is directly connected, Ethernet0/0
+C        10.220.32.20/30 is directly connected, Ethernet0/3
+L        10.220.32.22/32 is directly connected, Ethernet0/3
+O        10.220.32.24/30 [110/30] via 10.220.32.17, 09:50:55, Ethernet0/0
+                         [110/30] via 10.220.32.13, 00:20:02, Ethernet0/1
+O        10.220.32.28/30 [110/30] via 10.220.32.17, 00:20:02, Ethernet0/0
+                         [110/30] via 10.220.32.13, 00:19:23, Ethernet0/1
+O        10.220.32.32/30 [110/30] via 10.220.32.17, 09:50:55, Ethernet0/0
+                         [110/30] via 10.220.32.13, 00:20:02, Ethernet0/1
+O        10.220.32.36/30 [110/30] via 10.220.32.17, 00:20:02, Ethernet0/0
+                         [110/30] via 10.220.32.13, 00:19:23, Ethernet0/1
+O        10.220.32.40/30 [110/30] via 10.220.32.17, 09:50:55, Ethernet0/0
+                         [110/30] via 10.220.32.13, 00:20:02, Ethernet0/1
+O        10.220.32.44/30 [110/20] via 10.220.32.13, 00:20:02, Ethernet0/1
+O        10.220.32.48/30 [110/20] via 10.220.32.17, 09:50:55, Ethernet0/0
+O        10.220.32.52/30 [110/20] via 10.220.32.17, 09:50:55, Ethernet0/0
+O        10.220.32.56/30 [110/20] via 10.220.32.13, 00:20:02, Ethernet0/1
+C        10.220.32.60/30 is directly connected, Ethernet1/0
+L        10.220.32.62/32 is directly connected, Ethernet1/0
+      172.16.0.0/16 is variably subnetted, 3 subnets, 2 masks
+B        172.16.5.0/30 [200/0] via 10.10.11.14, 08:29:38
+C        172.16.5.4/30 is directly connected, Ethernet0/2
+L        172.16.5.5/32 is directly connected, Ethernet0/2
+B     192.168.0.0/24 [20/0] via 172.16.5.6, 00:18:18
+O     192.168.10.0/24 [110/31] via 10.220.32.17, 00:20:12, Ethernet0/0
+                      [110/31] via 10.220.32.13, 00:20:02, Ethernet0/1
+B     192.168.30.0/24 [20/0] via 172.16.5.6, 00:16:12
+B     192.168.31.0/24 [20/0] via 172.16.5.6, 00:15:41
+O     192.168.70.0/24 [110/31] via 10.220.32.17, 09:50:45, Ethernet0/0
+                      [110/31] via 10.220.32.13, 00:20:02, Ethernet0/1
+B     192.168.80.0/24 [20/0] via 172.16.5.6, 00:18:18

@@ -175,7 +175,28 @@ router bgp 1001
 
 <img src="R18.png" alt="image" width="60%" height="auto">
 
-5.
+5.  Для обеспечения связности делаем redistribute connected в OSPF ISIS EIGRP, и анонсируем эти сети на EBGP узлах
+
+проверяем пинг в разные стороны- 
+Москва в СПБ и Чокурдах
+
+<img src="MCK_ping.png" alt="image" width="60%" height="auto">
+
+
+СПБ
+
+
+<img src="spb_ping.png" alt="image" width="60%" height="auto">
+
+
+
+Чокурдах
+
+<img src="Chokurdah.png" alt="image" width="60%" height="auto">
+
+
 
 
  [конфигурация узлов](conf/)
+
+ [ip_route](ip_route/)
