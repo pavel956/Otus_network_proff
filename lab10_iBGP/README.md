@@ -20,8 +20,9 @@ neighbor 10.10.11.14 remote-as 1001
 neighbor 10.10.11.14 update-source Loopback0
 neighbor 10.10.11.14 next-hop-self</code></pre>
 
-2. Настраиваем Triada.RR выбираем R24
-R24
+2. Настраиваем Triada.
+RR выбираем R24
+
 <pre><code>router bgp 520
  bgp router-id 10.10.11.24
  network 10.10.11.24
@@ -111,7 +112,7 @@ route-map AS_301_out permit 10
 вешаем эти Роутмап на соседа BGP
 <pre><code>neighbor 172.16.5.6 route-map AS_301_in in
 neighbor 172.16.5.6 route-map AS_301_out out</code></pre>
-итоговая конфигурация BGP (для того чтобы обеспечитьсвязанность между офисами анонсируем сети VPC1 VPC7 192.168.70.0 и 192.168.10.0)
+итоговая конфигурация BGP (для того чтобы обеспечить связанность между офисами анонсируем сети VPC1 VPC7 192.168.70.0 и 192.168.10.0)
 
 R15
 
