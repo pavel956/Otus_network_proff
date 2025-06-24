@@ -154,6 +154,8 @@ router bgp 1001
 
  clear ip bgp * soft out</code></pre>
 
+<img src="kitorn.png" alt="image" width="60%" height="auto">
+
 
 
 4. Настраиваем распределение на R18
@@ -165,9 +167,15 @@ router bgp 1001
 
  <pre><code>maximum-paths 2 </code></pre> 
 
+таблица маршрутизации до настроек
 
-<img src="kitorn.png" alt="image" width="60%" height="auto">
+<img src="R18_1.png" alt="image" width="60%" height="auto">
 
+после настройки Multipath
+
+<img src="R18.png" alt="image" width="60%" height="auto">
+
+5.
 
 
  [конфигурация узлов](conf/)
