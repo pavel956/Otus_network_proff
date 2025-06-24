@@ -75,7 +75,99 @@ router bgp 520
  neighbor 10.10.11.26 peer-group TRIADA
  neighbor 172.16.5.18 remote-as 101</code></pre>
 
-теперь проверяем при помощи команд <pre><code>show ip protocols</code></pre>
+теперь проверяем при помощи команд <pre><code>show ip protocols</code></pre>на R23 R24
 
 <img src="RR23.png" alt="image" width="60%" height="auto">
+<img src="RR24.png" alt="image" width="60%" height="auto">
+
+
+видим, что оба чувствуют себя Route Reflector
+
+
+3. Чтобы приоритетным провайдером стал Ламас будем использовать атрибуты.
+* для направления входящего трафика - Local Preference. При этом, более высокое значение устанавливаем на предпочтительного провайдера- Ламас.
+- для направления исходящего трафика в нужную сторону будем анонсировать префиксы искусственно удлинив значение атрибута AS-PATH
+
+создадим  Rout-map на входящий и исходящий трафик
+
+
+R14
+
+
+<pre><code>route-map AS_101_out permit 10
+ set as-path prepend 1001 1001 1001 1001 1001
+!
+route-map AS101_IN permit 10
+ set local-preference 500</code></pre>
+
+R15
+
+<pre><code>route-map AS_301_in permit 10
+ set local-preference 800
+!
+route-map AS_301_out permit 10
+ set as-path prepend 1001</code></pre>
+
+вешаем эти Роутмап на соседа BGP
+<pre><code>neighbor 172.16.5.6 route-map AS_301_in in
+neighbor 172.16.5.6 route-map AS_301_out out</code></pre>
+итоговая конфигурация BGP (для того чтобы обеспечитьсвязанность между офисами анонсируем сети VPC1 VPC7 192.168.70.0 и 192.168.10.0)
+
+R15
+
+
+<pre><code>router bgp 1001
+ bgp router-id 10.10.11.15
+ bgp log-neighbor-changes
+ network 10.10.11.15 mask 255.255.255.255
+ network 192.168.10.0
+ network 192.168.70.0
+ neighbor 10.10.11.14 remote-as 1001
+ neighbor 10.10.11.14 update-source Loopback0
+ neighbor 10.10.11.14 next-hop-self
+ neighbor 172.16.5.6 remote-as 301
+ neighbor 172.16.5.6 route-map AS_301_in in
+ neighbor 172.16.5.6 route-map AS_301_out out</code></pre>
+
+
+R14
+
+
+<pre><code>R14#show running-config | s r b
+router bgp 1001
+ bgp router-id 10.10.11.14
+ bgp log-neighbor-changes
+ network 10.10.11.14 mask 255.255.255.255
+ network 172.16.5.0 mask 255.255.255.252
+ network 192.168.10.0
+ network 192.168.70.0
+ neighbor 10.10.11.15 remote-as 1001
+ neighbor 10.10.11.15 update-source Loopback0
+ neighbor 172.16.5.2 remote-as 101
+ neighbor 172.16.5.2 route-map AS101_IN in
+ neighbor 172.16.5.2 route-map AS_101_out out</code></pre>
+
+
+проверяем - запуская трассировку с VPC8 VPC7 (Из СПБ в сторону Москвы и наоборот), меняя данные атрибуты, видим, трафик перенаправляется в нужную нам сторону.
+ для применения политик необходимо после изменений делать мягкое или жестое обновление BGP на R14 R15
+<pre><code> clear ip bgp * soft in
+
+ clear ip bgp * soft out</code></pre>
+
+
+
+4. Настраиваем распределение на R18
+
+ разрешаем использовать несколько путей для маршрутов с одинаковым AS path. 
+ <pre><code>bgp bestpath as-path multipath-relax </code></pre>
+
+ По умолчанию BGP выбирает один лучший путь из возможных равнозначных, полученных от разных провайдеров. Команда maximum-paths меняет это поведение, позволяя использовать несколько путей для одного назначения. 
+
+ <pre><code>maximum-paths 2 </code></pre> 
+
+
+<img src="kitorn.png" alt="image" width="60%" height="auto">
+
+
+
  [конфигурация узлов](conf/)
