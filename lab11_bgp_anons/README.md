@@ -45,6 +45,75 @@ neighbor 172.16.5.25 prefix-list NO_TRANSIT out</code></pre>
 <img src="R18_adv2.png" alt="image" width="60%" height="auto">
 
 3.
+Добавить default route в BGP можно 3-мя способами:
+1) С помощью команды network
+2) С помощью команды redistribute
+3) С помощью команды neighbor [neighbor-id] default-originate [route-map route-map-name]
+
+
+используем третий способ 
+
+Если использовать neighbor [neighbor-id] default-originate [route-map route-map-name], то маршрут по умолчанию не создается в таблице BGP. Эта команда указывает, что конкретному соседу нужно отдавать маршрут по-умолчанию. Так же данный способ не проверяет, находится ли в таблице маршрутизации маршрут по-умолчанию. 
+ Чтобы отдавалсь только маршрут по умолчанию отфильтруем все остальные маршруты при помощи префикс лист
+
+ Создаем статический маршрут в null0
+
+<pre><code>ip route 0.0.0.0 0.0.0.0 Null0</code></pre>
+
+Создаем префикс лист
+
+<pre><code>ip prefix-list Def-route seq 5 permit 0.0.0.0/0
+
+route-map check-default permit 10
+ match ip address prefix-list Def-route</code></pre>
+
+Отдаем маршрут по умолчанию, применяем фильтр
+
+
+<pre><code>neighbor 172.16.5.1 default-originate
+ neighbor 172.16.5.1 route-map check-default out</code></pre>
+
+
+проверяем - что мы анонсируем в сторну R14 c R22 до манипуляций
+
+
+<img src="R22_0.png" alt="image" width="60%" height="auto">
+
+после примения default-originate
+
+<img src="R22_1.png" alt="image" width="60%" height="auto">
+
+после примения фильтров на выход
+
+<img src="R22_3.png" alt="image" width="60%" height="auto">
+
+4.
+для решения задачи также как и в п.3 используем default-originate  на соседа + префикс лист где отфильтруем все кроме сети СПБ
+
+
+
+<pre><code>
+ip prefix-list Def-route seq 10 permit 192.168.80.0/24
+ip prefix-list Def-route seq 20 permit 192.168.0.0/24
+ip prefix-list Def-route seq 100 deny 0.0.0.0/0code>
+
+route-map Check-default permit 10
+ match ip address prefix-list Def-route
+
+
+neighbor 172.16.5.5 default-originate
+neighbor 172.16.5.5 route-map Check-default out
+</pre>
+
+
+проверяем анонсы с R21   в сторону R15
+
+
+<img src="R21_0.png" alt="image" width="60%" height="auto">
+
+после примения default-originate + фильтры 
+
+<img src="R21_1.png" alt="image" width="60%" height="auto">
 
 
  [конфигурация узлов](conf/)
