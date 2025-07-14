@@ -118,4 +118,4 @@ neighbor 172.16.5.5 route-map Check-default out
 
  [конфигурация узлов](conf/)
 
- [ip_route](ip_route/)
+ [1](1/)
