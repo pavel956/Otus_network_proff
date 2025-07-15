@@ -115,6 +115,15 @@ neighbor 172.16.5.5 route-map Check-default out
 
 <img src="R21_1.png" alt="image" width="60%" height="auto">
 
+пингуем из Москвы
+
+<img src="ping_M.png" alt="image" width="60%" height="auto">
+
+Пингуем из СпБ
+
+
+<img src="ping_SpB.png" alt="image" width="60%" height="auto">
+
 
  [конфигурация узлов](conf/)
 
