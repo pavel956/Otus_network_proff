@@ -25,7 +25,14 @@ ________________________________________________________
 Чтобы работала связь между офисами, обявляем 
 <pre><code> network 135.135.135.0 mask 255.255.255.252<code></pre>
 
-проверяем работу нат
+проверяем работу нат, пингуем в сторону сети СПБ
+<img src="png/1.png" alt="image" width="60%" height="auto">
 
+проверяем по Wireshark
+
+<img src="png/w1.png" alt="image" width="60%" height="auto">
+на R15
+<pre><code>show nat translations<code></pre>
+<img src="png/nat_r15.png" alt="image" width="60%" height="auto">
 
 2. 
