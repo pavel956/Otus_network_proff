@@ -203,3 +203,15 @@ ntp server 10.10.11.13
 тут мы видим, что синхронизацию получаем от R12
 
 проверяем связность из Москвы
+
+
+<img src="png/ping_MSK.png" alt="image" width="60%" height="auto">
+
+
+проверяем связность из Санкт-Петербурга
+
+
+<img src="png/ping_spb.png" alt="image" width="60%" height="auto">
+
+
+[конфигурация узлов](conf/)
