@@ -271,4 +271,270 @@ c R27 пингуется теннельные интерфесы R14 и R28
 ```
 
 
+проверка на Хабе - R14( туннель 200- на лупбеках)
+![alt text](image-6.png)
+подробная информация  
+
+![alt text](image-7.png)
+
+
+Суммарная информация и информация по пакетам
+
+![alt text](image-8.png)
+
+Получатели multicast-трафика:
+![alt text](image-9.png)
+
+
++ Настройка маршрутизации(OSPF)
+
+все туннельные интерфесы помещаем в stub-area 11
+
+ R14
+```
+router ospf 1
+area 11 stub
+
+interface Tunnel501
+ ip ospf 1 area 11
+```
+
+
+R28
+
+
+
+```
+
+router ospf 1
+ network 10.10.11.28 0.0.0.0 area 11
+ network 192.168.250.0 0.0.0.255 area 11
+```
+
+На hub-маршрутизаторе и spoke-маршрутизаторах отличаются настройки приоритетов, остальные настройки совпадают.
+
+Приоритет интерфейса влияет на то, какой маршрутизатор будет выбран выделенным маршрутизатором (DR) для сети. В топологии "звезда" роль DR должен взять на себя центральный маршрутизатор.
+
+На hub-маршрутизаторе приоритет устанавливается 10:
+
+```ip ospf priority 10```
+
+На spoke-маршрутизаторах R27 R28 приоритет устанавливается 0 для того чтобы маршрутизаторы не могли участвовать в выборах DR:
+```
+interface Tunnel501
+ip ospf priority 0
+```
+Указание типа сети OSPF на mGRE-интерфейсе:
+
+```ip ospf network broadcast```
+
+Изменение интервала между отправкой hello-пакетов:
+ 
+ ```ip ospf hello-interval 30```
+
+Итого настройк DMVPN 
+<details>
+<summary> R28</summary>
+
+```
+interface Tunnel501
+ ip address 192.168.251.2 255.255.255.0
+ no ip redirects
+ ip mtu 1400
+ ip nhrp map 192.168.251.1 172.16.5.1
+ ip nhrp map multicast 172.16.5.1
+ ip nhrp network-id 501
+ ip nhrp nhs 192.168.251.1
+ ip nhrp registration no-unique
+ ip ospf network broadcast
+ ip ospf hello-interval 30
+ ip ospf priority 0
+ keepalive 10 5
+ tunnel source 172.16.5.30
+ tunnel mode gre multipoint
+ tunnel key 501
+
+router ospf 1
+ network 10.10.11.28 0.0.0.0 area 11
+ network 192.168.250.0 0.0.0.255 area 11
+
+ ```
+
+</details>
+
+<details>
+<summary> R27</summary>
+
+```
+interface Tunnel501
+ ip address 192.168.251.3 255.255.255.0
+ no ip redirects
+ ip mtu 1400
+ ip nhrp map 192.168.251.1 172.16.5.1
+ ip nhrp map multicast 172.16.5.1
+ ip nhrp network-id 501
+ ip nhrp nhs 192.168.251.1
+ ip nhrp registration no-unique
+ ip ospf network broadcast
+ ip ospf hello-interval 30
+ ip ospf priority 0
+ keepalive 10 5
+ tunnel source 172.16.5.38
+ tunnel mode gre multipoint
+ tunnel key 501
+ router ospf 1
+
+ area 11 stub
+ network 10.10.11.27 0.0.0.0 area 11
+ network 192.168.251.0 0.0.0.255 area 11
+
+ ```
+
+</details>
+<details>
+<summary> R14</summary>
+
+```
+interface Tunnel501
+ ip address 192.168.251.1 255.255.255.0
+ no ip redirects
+ ip mtu 1400
+ ip nhrp map multicast dynamic
+ ip nhrp network-id 501
+ ip ospf network broadcast
+ ip ospf hello-interval 30
+ ip ospf priority 10
+ ip ospf 1 area 11
+ keepalive 10 5
+ tunnel source 172.16.5.1
+ tunnel mode gre multipoint
+ tunnel key 501
+router ospf 1
+ area 11 stub
+
+ ```
+
+
+
+</details>
+
+
+аналогично настраиваем туннель 500 между R15 и R27 R28
+
+проверяем работу OSPF
+
+R27
+
+![alt text](image-10.png)
+
+R14
+![alt text](image-11.png)
+
+После включения всех маршрутизаторов в Москве проверяем таблицу маршрутизации и связность между офисами
+
+<details>
+<summary> R28</summary>
+
+```
+R28#show ip route
+Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
+       D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area
+       N1 - OSPF NSSA external type 1, N2 - OSPF NSSA external type 2
+       E1 - OSPF external type 1, E2 - OSPF external type 2
+       i - IS-IS, su - IS-IS summary, L1 - IS-IS level-1, L2 - IS-IS level-2
+       ia - IS-IS inter area, * - candidate default, U - per-user static route
+       o - ODR, P - periodic downloaded static route, H - NHRP, l - LISP
+       a - application route
+       + - replicated route, % - next hop override
+
+Gateway of last resort is 172.16.5.33 to network 0.0.0.0
+
+S*    0.0.0.0/0 [1/0] via 172.16.5.33
+                [1/0] via 172.16.5.29
+      10.0.0.0/8 is variably subnetted, 28 subnets, 2 masks
+O IA     10.10.11.2/32 [110/1031] via 192.168.251.1, 00:01:09, Tunnel501
+                       [110/1031] via 192.168.250.1, 00:01:09, Tunnel500
+O IA     10.10.11.3/32 [110/1031] via 192.168.251.1, 00:01:09, Tunnel501
+                       [110/1031] via 192.168.250.1, 00:01:09, Tunnel500
+O IA     10.10.11.4/32 [110/1021] via 192.168.251.1, 00:01:19, Tunnel501
+                       [110/1021] via 192.168.250.1, 00:01:19, Tunnel500
+O IA     10.10.11.5/32 [110/1021] via 192.168.251.1, 00:01:19, Tunnel501
+                       [110/1021] via 192.168.250.1, 00:01:19, Tunnel500
+O IA     10.10.11.12/32 [110/1011] via 192.168.251.1, 00:01:59, Tunnel501
+                        [110/1011] via 192.168.250.1, 00:02:01, Tunnel500
+O IA     10.10.11.13/32 [110/1011] via 192.168.251.1, 00:02:09, Tunnel501
+                        [110/1011] via 192.168.250.1, 00:02:11, Tunnel500
+O IA     10.10.11.14/32 [110/1001] via 192.168.251.1, 00:51:17, Tunnel501
+O IA     10.10.11.15/32 [110/1001] via 192.168.250.1, 00:51:17, Tunnel500
+O IA     10.10.11.19/32 [110/1011] via 192.168.251.1, 00:01:59, Tunnel501
+O IA     10.10.11.20/32 [110/1011] via 192.168.250.1, 00:01:51, Tunnel500
+O        10.10.11.27/32 [110/1001] via 192.168.251.3, 00:51:17, Tunnel501
+                        [110/1001] via 192.168.250.3, 00:51:17, Tunnel500
+C        10.10.11.28/32 is directly connected, Loopback0
+O IA     10.220.32.0/30 [110/1010] via 192.168.251.1, 00:51:17, Tunnel501
+O IA     10.220.32.4/30 [110/1010] via 192.168.251.1, 00:51:17, Tunnel501
+O IA     10.220.32.8/30 [110/1010] via 192.168.251.1, 00:51:17, Tunnel501
+O IA     10.220.32.12/30 [110/1010] via 192.168.250.1, 00:51:17, Tunnel500
+O IA     10.220.32.16/30 [110/1010] via 192.168.250.1, 00:51:17, Tunnel500
+O IA     10.220.32.20/30 [110/1010] via 192.168.250.1, 00:51:17, Tunnel500
+O IA     10.220.32.24/30 [110/1030] via 192.168.251.1, 00:01:19, Tunnel501
+                         [110/1030] via 192.168.250.1, 00:01:19, Tunnel500
+O IA     10.220.32.28/30 [110/1030] via 192.168.251.1, 00:01:19, Tunnel501
+                         [110/1030] via 192.168.250.1, 00:01:19, Tunnel500
+O IA     10.220.32.32/30 [110/1030] via 192.168.251.1, 00:01:19, Tunnel501
+                         [110/1030] via 192.168.250.1, 00:01:19, Tunnel500
+O IA     10.220.32.36/30 [110/1030] via 192.168.251.1, 00:01:19, Tunnel501
+                         [110/1030] via 192.168.250.1, 00:01:19, Tunnel500
+O IA     10.220.32.40/30 [110/1030] via 192.168.251.1, 00:01:19, Tunnel501
+                         [110/1030] via 192.168.250.1, 00:01:19, Tunnel500
+O IA     10.220.32.44/30 [110/1020] via 192.168.251.1, 00:01:59, Tunnel501
+                         [110/1020] via 192.168.250.1, 00:02:01, Tunnel500
+O IA     10.220.32.48/30 [110/1020] via 192.168.251.1, 00:02:09, Tunnel501
+                         [110/1020] via 192.168.250.1, 00:02:11, Tunnel500
+O IA     10.220.32.52/30 [110/1020] via 192.168.251.1, 00:02:09, Tunnel501
+                         [110/1020] via 192.168.250.1, 00:02:11, Tunnel500
+O IA     10.220.32.56/30 [110/1020] via 192.168.251.1, 00:01:59, Tunnel501
+                         [110/1020] via 192.168.250.1, 00:02:01, Tunnel500
+O IA     10.220.32.60/30 [110/1010] via 192.168.251.1, 00:51:17, Tunnel501
+                         [110/1010] via 192.168.250.1, 00:51:17, Tunnel500
+      172.16.0.0/16 is variably subnetted, 4 subnets, 2 masks
+C        172.16.5.28/30 is directly connected, Ethernet0/0
+L        172.16.5.30/32 is directly connected, Ethernet0/0
+C        172.16.5.32/30 is directly connected, Ethernet0/1
+L        172.16.5.34/32 is directly connected, Ethernet0/1
+O IA  192.168.10.0/24 [110/1040] via 192.168.251.1, 00:01:09, Tunnel501
+                      [110/1040] via 192.168.250.1, 00:01:09, Tunnel500
+      192.168.30.0/24 is variably subnetted, 2 subnets, 2 masks
+C        192.168.30.0/24 is directly connected, Ethernet0/2.30
+L        192.168.30.1/32 is directly connected, Ethernet0/2.30
+      192.168.31.0/24 is variably subnetted, 2 subnets, 2 masks
+C        192.168.31.0/24 is directly connected, Ethernet0/2.31
+L        192.168.31.1/32 is directly connected, Ethernet0/2.31
+O IA  192.168.70.0/24 [110/1040] via 192.168.251.1, 00:01:09, Tunnel501
+                      [110/1040] via 192.168.250.1, 00:01:09, Tunnel500
+      192.168.150.0/24 is variably subnetted, 2 subnets, 2 masks
+C        192.168.150.0/24 is directly connected, Tunnel200
+L        192.168.150.2/32 is directly connected, Tunnel200
+      192.168.200.0/24 is variably subnetted, 2 subnets, 2 masks
+C        192.168.200.0/24 is directly connected, Tunnel100
+L        192.168.200.2/32 is directly connected, Tunnel100
+      192.168.250.0/24 is variably subnetted, 2 subnets, 2 masks
+C        192.168.250.0/24 is directly connected, Tunnel500
+L        192.168.250.2/32 is directly connected, Tunnel500
+      192.168.251.0/24 is variably subnetted, 2 subnets, 2 masks
+C        192.168.251.0/24 is directly connected, Tunnel501
+L        192.168.251.2/32 is directly connected, Tunnel501
+
+
+ ```
+
+
+
+</details>
+
+
+![alt text](image-12.png)
+
+
+
 [конфигурация узлов](conf/)
