@@ -1,0 +1,163 @@
+
+R23>
+R23>
+R23>en
+R23#show run
+R23#show running-config
+Building configuration...
+
+Current configuration : 2015 bytes
+!
+version 15.4
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+!
+hostname R23
+!
+boot-start-marker
+boot-end-marker
+!
+!
+!
+no aaa new-model
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!
+!
+!
+!
+!
+!
+!
+!
+
+
+!
+!
+!
+!
+ip cef
+no ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+!
+!
+!
+redundancy
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Loopback0
+ ip address 10.10.11.23 255.255.255.255
+ ip router isis
+!
+interface Ethernet0/0
+ description R23_to_R22
+ ip address 172.16.5.17 255.255.255.252
+!
+interface Ethernet0/1
+ description R23_to_R25
+ ip address 10.220.40.1 255.255.255.252
+ ip router isis
+!
+interface Ethernet0/2
+ description R23_to_R24
+ ip address 10.220.40.5 255.255.255.252
+ ip router isis
+!
+interface Ethernet0/3
+ no ip address
+ shutdown
+!
+interface Ethernet1/0
+ no ip address
+ shutdown
+!
+interface Ethernet1/1
+ no ip address
+ shutdown
+!
+interface Ethernet1/2
+ no ip address
+ shutdown
+!
+interface Ethernet1/3
+ no ip address
+ shutdown
+!
+router isis
+ net 49.2222.0100.1001.1023.00
+ metric-style wide
+!
+router bgp 520
+ bgp router-id 10.10.11.23
+ bgp log-neighbor-changes
+ network 10.10.11.27 mask 255.255.255.255
+ network 10.10.11.28 mask 255.255.255.255
+ network 139.139.139.0
+ network 172.16.5.28 mask 255.255.255.252
+ network 172.16.5.32 mask 255.255.255.252
+ network 192.168.30.0
+ network 192.168.31.0
+ neighbor TRIADA peer-group
+ neighbor TRIADA remote-as 520
+ neighbor TRIADA update-source Loopback0
+ neighbor TRIADA route-reflector-client
+ neighbor TRIADA next-hop-self
+ neighbor 10.10.11.24 remote-as 520
+ neighbor 10.10.11.24 update-source Loopback0
+ neighbor 10.10.11.24 next-hop-self
+ neighbor 10.10.11.25 peer-group TRIADA
+ neighbor 10.10.11.26 peer-group TRIADA
+ neighbor 172.16.5.18 remote-as 101
+!
+ip forward-protocol nd
+!
+!
+no ip http server
+no ip http secure-server
+!
+!
+!
+!
+control-plane
+!
+!
+!
+!
+!
+!
+!
+!
+line con 0
+ logging synchronous
+line aux 0
+line vty 0 4
+ login
+ transport input none
+!
+!
+end
+
+R23#

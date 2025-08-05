@@ -1,0 +1,223 @@
+hostname R14
+!
+boot-start-marker
+boot-end-marker
+!
+!
+!
+no aaa new-model
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!
+!
+!
+!
+!
+!
+!
+!
+
+
+!
+!
+!
+!
+ip domain name cisco-dmn
+ip cef
+no ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+!
+!
+username super secret 5 $1$eHwL$6G0XLMFVPYNErq4aXjC6p/
+!
+redundancy
+!
+!
+ip ssh version 2
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Loopback0
+ ip address 10.10.11.14 255.255.255.255
+!
+interface Tunnel1
+ description TO_SPB_R14
+ ip address 192.168.180.1 255.255.255.0
+ ip mtu 1400
+ ip tcp adjust-mss 1360
+ keepalive 10 5
+ tunnel source 10.10.11.14
+ tunnel destination 10.10.11.18
+!
+interface Tunnel200
+ ip address 192.168.150.1 255.255.255.0
+ no ip redirects
+ ip mtu 1416
+ ip nhrp map multicast dynamic
+ ip nhrp network-id 10
+ tunnel source 10.10.11.14
+ tunnel mode gre multipoint
+ tunnel key 10
+!
+interface Tunnel501
+ ip address 192.168.251.1 255.255.255.0
+ no ip redirects
+ ip mtu 1400
+ ip nhrp map multicast dynamic
+ ip nhrp network-id 501
+ ip ospf network broadcast
+ ip ospf hello-interval 30
+ ip ospf priority 10
+ ip ospf 1 area 11
+ keepalive 10 5
+ tunnel source 172.16.5.1
+ tunnel mode gre multipoint
+ tunnel key 501
+!
+interface Ethernet0/0
+ description R14_t0_R12
+ ip address 10.220.32.6 255.255.255.252
+ ip nat inside
+ ip virtual-reassembly in
+!
+interface Ethernet0/1
+ description R14_t0_R13
+ ip address 10.220.32.10 255.255.255.252
+ ip nat inside
+ ip virtual-reassembly in
+!
+interface Ethernet0/2
+ description R14_to_R22
+ ip address 172.16.5.1 255.255.255.252
+ ip nat outside
+ ip virtual-reassembly in
+!
+interface Ethernet0/3
+ description R14_t0_R19
+ ip address 10.220.32.2 255.255.255.252
+ ip nat inside
+ ip virtual-reassembly in
+!
+interface Ethernet1/0
+ description R14_to_R15
+ ip address 10.220.32.61 255.255.255.252
+ ip nat inside
+ ip virtual-reassembly in
+ ip ospf 1 area 0
+!
+interface Ethernet1/1
+ no ip address
+ shutdown
+!
+interface Ethernet1/2
+ no ip address
+ shutdown
+!
+interface Ethernet1/3
+ no ip address
+ shutdown
+!
+router ospf 1
+ router-id 10.10.11.14
+ area 10 stub
+ area 11 stub
+ area 101 stub no-summary
+ network 10.10.11.14 0.0.0.0 area 0
+ network 10.220.32.0 0.0.0.3 area 101
+ network 10.220.32.4 0.0.0.3 area 10
+ network 10.220.32.8 0.0.0.3 area 10
+ default-information originate
+!
+router bgp 1001
+ bgp router-id 10.10.11.14
+ bgp log-neighbor-changes
+ network 10.10.11.14 mask 255.255.255.255
+ network 135.135.135.1
+ network 137.137.137.0 mask 255.255.255.0
+ network 137.137.137.20
+ network 138.138.138.0 mask 255.255.255.0
+ network 138.138.138.19
+ network 172.16.5.0 mask 255.255.255.252
+ neighbor 10.10.11.15 remote-as 1001
+ neighbor 10.10.11.15 update-source Loopback0
+ neighbor 10.10.11.15 next-hop-self
+ neighbor 172.16.5.2 remote-as 101
+ neighbor 172.16.5.2 route-map AS101_IN in
+ neighbor 172.16.5.2 route-map AS_101_out out
+ neighbor 172.16.5.2 filter-list 300 out
+!
+ip forward-protocol nd
+!
+ip as-path access-list 300 permit ^$
+!
+no ip http server
+no ip http secure-server
+ip nat pool MSK 135.135.135.1 135.135.135.1 netmask 255.255.255.252
+ip nat inside source list 1 pool MSK overload
+ip nat inside source static 10.10.11.20 137.137.137.20
+ip nat inside source static tcp 10.10.11.19 22 138.138.138.19 2222 extendable
+ip route 135.135.135.0 255.255.255.252 Null0
+ip route 137.137.137.0 255.255.255.0 Null0
+ip route 138.138.138.0 255.255.255.0 Null0
+ip route 192.168.0.0 255.255.255.0 192.168.180.2
+ip route 192.168.80.0 255.255.255.0 192.168.180.2
+!
+!
+route-map AS_101_NO_TRANZIT permit 10
+ match as-path 300
+!
+route-map AS_101_out permit 10
+ set as-path prepend 1001 1001 1001 1001 1001
+!
+route-map AS101_IN permit 10
+ set local-preference 500
+!
+!
+access-list 1 permit 192.168.0.0 0.0.255.255
+!
+control-plane
+!
+!
+!
+!
+!
+!
+!
+!
+line con 0
+ logging synchronous
+line aux 0
+line vty 0
+ password cisco
+ login
+ transport input ssh
+line vty 1 4
+ login
+ transport input none
+!
+ntp update-calendar
+ntp server 10.10.11.12
+ntp server 10.10.11.13
+!
+end
+
+R14#
