@@ -9,10 +9,12 @@
 
 ________________________________________________________
 
+1.
 
 
-<img src="png/shem.png" alt="image" width="60%" height="auto">
 
+
+ ```
 crypto isakmp policy 10
  encr 3des
  hash sha256
@@ -36,10 +38,44 @@ interface Tunnel0
  tunnel mode ipsec ipv4
  tunnel destination 172.16.5.22
  tunnel protection ipsec profile PROFILE
+ ```
+
+ ``` 
+crypto ikev2 proposal PHASE1
+ encryption aes-cbc-128
+ integrity sha256
+ group 2
+!
+crypto ikev2 policy 10
+ proposal PHASE1
+!
+!
+crypto ikev2 profile PROFILE1
+ match identity remote address 172.16.5.22 255.255.255.252
+ authentication remote pre-share key PASSWORD
+ authentication local pre-share key PASSWORD
+!
+!
+!
+crypto ipsec transform-set IPSEC_TS esp-aes esp-md5-hmac
+ mode tunnel
+!
+crypto ipsec profile TO_R18
+ set transform-set IPSEC_TS
+ set ikev2-profile PROFILE1
+ ```
+<img src="image.png" alt="image" width="60%" height="auto">
+<img src="image-1.png" alt="image" width="60%" height="auto">
+<img src="image-2.png" alt="image" width="60%" height="auto">
+<img src="image-3.png" alt="image" width="60%" height="auto">
+<img src="image-4.png" alt="image" width="60%" height="auto">
+<img src="image-5.png" alt="image" width="60%" height="auto">
+<img src="image-6.png" alt="image" width="60%" height="auto">
 
 
 
-![alt text](image-12.png)
+
+2.
 
 
 
