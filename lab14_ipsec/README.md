@@ -76,7 +76,27 @@ crypto ipsec profile TO_R18
 
 
 2.
+ ```
+ip domain name otus.ru
 
+ip http server
+ 
+crypto key generate rsa general-keys label R24 modulus 2048 ex
+ ```
+
+
+
+
+R24(config)#crypto pki server R24
+R24(cs-server)#database level complete
+R24(cs-server)#lifetime crl 5
+R24(cs-server)#no shutdown
+
+![alt text](image-7.png)
+
+
+![alt text](image-8.png)
+![alt text](image-9.png)
 
 
 [конфигурация узлов](conf/)
