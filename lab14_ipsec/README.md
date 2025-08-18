@@ -76,6 +76,8 @@ crypto ipsec profile TO_R18
 
 
 2.
+
+Настройка сервера 
  ```
 ip domain name otus.ru
 
@@ -104,6 +106,57 @@ R24(cs-server)#no shutdown
 
 
 ![alt text](image-12.png)
+
+
+- Настройка клиентов
+
+
+
+ ```
+
+ Клиент:
+ip domain name otus.ru
+ip host R24 10.10.11.24
+crypto key generate rsa
+ ```
+
+crypto pki trustpoint R24
+ enrollment url http://R24:80
+
+Получение клиентом сертификата сервера:
+Клиент:
+crypto pki authenticate R24
+
+Получение клиентом сертификата для себя:
+Клиент:
+crypto pki enroll R24
+
+
+
+После этого идем на сервер 
+проверяем запросы на сертификат
+
+ ```R24#show crypto pki server R24 requests ```
+
+
+![alt text](image-13.png)
+
+Cервер (из привелегированного режима!): подтверждаем запрос на сертификат.
+
+
+ ```crypto pki server R24 grant all ```
+
+после этого проверяем выданные сетификаты
+
+```R24#show crypto pki server R24 certificates```
+
+![alt text](image-14.png)
+
+проверяем от клиента
+
+```show crypto pki certificates```
+
+![alt text](image-16.png)
 
 
 
