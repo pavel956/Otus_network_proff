@@ -606,6 +606,8 @@ Pending DMVPN Sessions:
 <img src="image-20.png" alt="image" width="60%" height="auto">
 
 
+
+
 [конфигурация узлов](conf/)
 
 [1](1/)
