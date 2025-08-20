@@ -11,8 +11,40 @@ ________________________________________________________
 
 1.
 
+Туннель устанавливается в два этапа(фаза):
+1. 1 фаза (Phase 1) – согласование метода идентификации, алгоритм
+шифрования, алгоритм хеширования и группа Diffie Hellman
+2. 2 фаза (Phase 2) – генерируются ключи для шифрования данных. 2
+фаза может начать работу только после установления первой фазы
 
+настраиваем 1 фазу
 
+Для согласования служебной информации работает протокол
+IKE(Internet Key Exchange) – формирует IPSec SA(Security Association –
+политики безопасности).
+То есть IKE согласовывает работу пиров защищенного соединения:
+
+• Алгоритм шифрования
+
+• Проверка целостности
+
+• Аутентификация
+
+Существует две версии протокола IKE
+
+• IKEv1 – разработан в 1998г. На данный момент распространен и везде
+поддерживается
+
+• IKEv2 – разработан в 2005. Интернет стандартом стал в 2014. На данный
+момент большинство оборудования поддерживает. Однако есть различия в
+реализациях у многих вендоров. Remote access(удаленные сотрудники) не у
+всех поддерживается до сих пор.
+
+Настроим 1 фазу на IKEv1 для туннеля GRE мкжду R15 и R18. 
+
+ Первым шагом является настройка политики ISAKMP Phase 1:
+
+R15
 
  ```
 crypto isakmp policy 10
@@ -20,59 +52,106 @@ crypto isakmp policy 10
  hash sha256
  authentication pre-share
  group 2
-crypto isakmp key BUBLIL address 172.16.5.22
-!
-!
+  ```
+Приведенные выше команды определяют следующее (в указанном порядке):
+
+- 3DES - метод шифрования, который будет использоваться на этапе 1 Phase 1
+- sha256 - алгоритм хеширования
+- Authentication pre-share - использование предварительного  общего ключа в качестве метода проверки подлинности
+- Group 2 - группа Диффи-Хеллмана, которая будет использоваться
+- 86400 - время жизни ключа сеанса. Выражается в килобайтах или в секундах. Значение установлено по умолчанию.
+
+
+Далее мы собираемся определить Pre Shared Key (PSK) для аутентификации с партнером R18, 172.16.5.22
+```crypto isakmp key BUBLIL address 172.16.5.22```
+PSK ключ партнера установлен на BUBLIL. Этот ключ будет использоваться для всех переговоров ISAKMP с партнером 172.16.5.22(R18).
+
+Настраиваем 2 фазу
+Теперь нам нужно создать набор преобразований, используемый для защиты наших данных. Мы назвали это TO_R18 
+
+```
 crypto ipsec transform-set TO_R18 esp-3des esp-sha256-hmac
  mode transport
-!
+```
+Вышеуказанные команды определяют следующее:
+
+- SP-3DES - метод шифрования
+- sha256 - алгоритм хеширования
+- mode transport Установите IPSec в транспортный режим(можно выбрать туннельный).
+
+
+![alt text](image-22.png)
+Наконец, мы создаем профиль IPSec для соединения ранее определенной конфигурации ISAKMP и IPSec. Мы назвали наш профиль PROFILE:
+ 
+```
 crypto ipsec profile PROFILE
  set transform-set TO_R18
+```
+Теперь мы готовы применить шифрование IPSec к интерфейсу туннеля:
 
+```
 interface Tunnel0
- ip address 192.168.170.1 255.255.255.0
- ip mtu 1400
- ip tcp adjust-mss 1360
- keepalive 10 5
- tunnel source 172.16.5.5
- tunnel mode ipsec ipv4
- tunnel destination 172.16.5.22
+
  tunnel protection ipsec profile PROFILE
  ```
+
+
+делаем аналогичные настройки со стороны R18
+```
+crypto isakmp policy 10
+ encr 3des
+ hash sha256
+ authentication pre-share
+ group 2
+crypto isakmp key BUBLIL address 172.16.5.5
+
+crypto ipsec transform-set TO_R15 esp-3des esp-sha256-hmac
+ mode transport
+crypto ipsec profile PROFILE
+ set transform-set TO_R15
+interface Tunnel0
+ tunnel protection ipsec profile PROFILE
+```
+
+
+проверяем работу туннеля
+<img src="image-3.png" alt="image" width="60%" height="auto">
+<img src="image-2.png" alt="image" width="60%" height="auto">
+<img src="image-1.png" alt="image" width="60%" height="auto">
+
+
+
+Между R18 и R14 настраиваем IKEv2
 
  ``` 
 crypto ikev2 proposal PHASE1
  encryption aes-cbc-128
  integrity sha256
  group 2
-!
 crypto ikev2 policy 10
  proposal PHASE1
-!
-!
 crypto ikev2 profile PROFILE1
  match identity remote address 172.16.5.22 255.255.255.252
  authentication remote pre-share key PASSWORD
  authentication local pre-share key PASSWORD
-!
-!
-!
+
 crypto ipsec transform-set IPSEC_TS esp-aes esp-md5-hmac
  mode tunnel
-!
 crypto ipsec profile TO_R18
  set transform-set IPSEC_TS
  set ikev2-profile PROFILE1
  ```
+
+ такие же настройки со стороны R18. Проверяем  работу ipsec
+
 <img src="image.png" alt="image" width="60%" height="auto">
-<img src="image-1.png" alt="image" width="60%" height="auto">
-<img src="image-2.png" alt="image" width="60%" height="auto">
-<img src="image-3.png" alt="image" width="60%" height="auto">
 <img src="image-4.png" alt="image" width="60%" height="auto">
 <img src="image-5.png" alt="image" width="60%" height="auto">
 <img src="image-6.png" alt="image" width="60%" height="auto">
 
+При пинге между VPC видим что трафик по прежнему идет через Tunnel 0
 
+<img src="image-23.png" alt="image" width="60%" height="auto">
 
 
 2.
