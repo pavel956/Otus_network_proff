@@ -63,11 +63,14 @@ crypto isakmp policy 10
 
 
 Далее мы собираемся определить Pre Shared Key (PSK) для аутентификации с партнером R18, 172.16.5.22
+
 ```crypto isakmp key BUBLIL address 172.16.5.22```
+
 PSK ключ партнера установлен на BUBLIL. Этот ключ будет использоваться для всех переговоров ISAKMP с партнером 172.16.5.22(R18).
 
-Настраиваем 2 фазу
-Теперь нам нужно создать набор преобразований, используемый для защиты наших данных. Мы назвали это TO_R18 
+Настраиваем 2 фазу.
+
+Теперь нам нужно создать набор преобразований, используемый для защиты наших данных. Назовем это TO_R18 
 
 ```
 crypto ipsec transform-set TO_R18 esp-3des esp-sha256-hmac
@@ -79,8 +82,13 @@ crypto ipsec transform-set TO_R18 esp-3des esp-sha256-hmac
 - sha256 - алгоритм хеширования
 - mode transport Установите IPSec в транспортный режим(можно выбрать туннельный).
 
+<details>
+<summary> транпортный или туннельный</summary>
 
 ![alt text](image-22.png)
+
+</details>
+
 Наконец, мы создаем профиль IPSec для соединения ранее определенной конфигурации ISAKMP и IPSec. Мы назвали наш профиль PROFILE:
  
 ```
@@ -116,13 +124,17 @@ crypto ipsec profile PROFILE
 interface Tunnel0
  tunnel protection ipsec profile PROFILE
 ```
-
 </details>
 
 
+
 проверяем работу туннеля
+
+
 <img src="image-3.png" alt="image" width="60%" height="auto">
+
 <img src="image-2.png" alt="image" width="60%" height="auto">
+
 <img src="image-1.png" alt="image" width="60%" height="auto">
 
 
