@@ -1,0 +1,304 @@
+hostname R15
+!
+boot-start-marker
+boot-end-marker
+!
+!
+!
+no aaa new-model
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!
+!
+!
+!
+!
+!
+!
+!
+
+
+!
+!
+!
+!
+ip domain name otus.ru
+ip host R24 10.10.11.24
+ip cef
+no ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+!
+crypto pki trustpoint R24
+ enrollment url http://R24:80
+ serial-number
+ revocation-check crl
+!
+!
+crypto pki certificate chain R24
+ certificate 07
+  30820281 30820169 A0030201 02020107 300D0609 2A864886 F70D0101 05050030
+  0E310C30 0A060355 04031303 52323430 1E170D32 35303831 39313333 3734305A
+  170D3236 30383139 31333337 34305A30 2D312B30 0F060355 04051308 36373130
+  39313034 30180609 2A864886 F70D0109 02160B52 31352E6F 7475732E 72753081
+  9F300D06 092A8648 86F70D01 01010500 03818D00 30818902 818100B4 7AAAC2CB
+  A9C618EA 8C8CD1F1 462E408C 89D589D8 E99D51A3 1A3F2814 618A6F2C 430111A5
+  EDAD18C3 5ACD7E79 A6955D04 4EF4BB1C 4A28D5BB FA1E901D BB86676E 6E02CEA8
+  39571131 5DF796A3 F4C92A74 8374E829 66C4EFAC 5A6BBA57 FFE0EFFC 1DB610D3
+  A903AA08 EF6E2EF8 8348475D 27913458 FFD0BFAB 9225849F 8D90C102 03010001
+  A34F304D 300B0603 551D0F04 04030205 A0301F06 03551D23 04183016 8014585B
+  0C7E1BA2 C64E1C58 02A47008 D004649B 1420301D 0603551D 0E041604 14B3CB47
+  A1D0581D 05ED7938 4A465F19 F736D802 5B300D06 092A8648 86F70D01 01050500
+  03820101 002F363C D663F1CA C1B08308 EF32F68E 24263397 0145F4E5 1810580B
+  E313968E 72DD9757 3F5908DA 68139C57 4BC6F96C 131ADB01 F63E1129 F7FBBC9C
+  D55342AC 63B564E5 0E77E75E FD6B5381 17A1DE01 4C65F8A2 5050D2D2 012DACDB
+  614C3E4D 872BD851 079D5AE0 E50B596E 5E046A63 986AE4C2 5444E7D2 07E8308D
+  FEA554DE CE075585 D783F357 F252E076 316FC77A BD10F2EE A6DD82C5 51F52A93
+  8D4DFC64 D121B31A 66244CCB 5E061296 F15FCA1F 39966421 8296FD8B EADFA250
+  9435A915 3B303A48 3D64440E 11AF94EC BE579F47 2B0F2510 3F340320 C8C3BB41
+  36811D2F B3CEEAA1 7E120543 162FD269 B9199EE1 BF755C44 957191E6 C9CD9051
+  5746AE1B C3
+        quit
+ certificate ca 01
+  308202FA 308201E2 A0030201 02020101 300D0609 2A864886 F70D0101 04050030
+  0E310C30 0A060355 04031303 52323430 1E170D32 35303831 35313335 3531335A
+  170D3238 30383134 31333535 31335A30 0E310C30 0A060355 04031303 52323430
+  82012230 0D06092A 864886F7 0D010101 05000382 010F0030 82010A02 82010100
+  A23C3A5E 192B91E9 EB6C1BAC 3C2AFE55 066AC61D 6D96D105 0124D1EC 5CE52601
+  768DF140 7D7D19A7 95E3A3A0 8E4A023E 16D84DB2 8CFEB947 0464B3FA 1055DD1E
+  2C623B94 8A7F864F 687438C3 C54012B9 69181FD5 3E552ABE 0CD11C61 08FC1B61
+  3514B8FC ECC1BDCE 7DCE0106 F3395D19 E6063D3D 38F39551 BE349E38 141FE486
+  BCF75400 1107764F 82692A54 AA79CCF8 9A309BA1 B2C07C28 C76104CF 11E10864
+  B3E26C6C 821AB993 6A3A50F4 347D3ACF F6B6376E F1ACE3BE DA96EE52 C2C8ECF2
+  D20A8CA9 F7732A40 AAEAD7D8 18ACCA2E AA5BAD79 7C757884 8467212C A8BBBA5C
+  EA57EAFA 8304850F 445F3684 DCEE3F97 83BCDFA3 AC4CDCB9 8439CE89 C1EA59E5
+  02030100 01A36330 61300F06 03551D13 0101FF04 05300301 01FF300E 0603551D
+  0F0101FF 04040302 0186301F 0603551D 23041830 16801458 5B0C7E1B A2C64E1C
+  5802A470 08D00464 9B142030 1D060355 1D0E0416 0414585B 0C7E1BA2 C64E1C58
+  02A47008 D004649B 1420300D 06092A86 4886F70D 01010405 00038201 0100434E
+  3A9C60ED F2615461 4804585A C820391A 77E1D09F B2BC63F3 E0EFB10E 09D79946
+  3FD2E683 632A207C 5D7BE475 4D54430C DED96263 7CEFB02F A761B7E7 5110E656
+  77AB5160 4CEF3F01 22B8D068 0590FDF9 D566C315 0A41D113 0121DA58 983C26A3
+  11D5DE29 BD4710F0 FFD485BE 8769A0EC 73FE05E1 C14BC413 39387DAE 4E9ECDAC
+  1F80C0B9 055E92C4 0D7D877D DB38F218 308DE119 68DC09D3 66311F5D 674F7E51
+  26438461 8780559D 68E9BD0F 6E4CE698 D8641BFF 242A39F6 24245191 58FE6B1A
+  E0F050FD F843632D 00301B55 89DA8A1C D2AF6E39 ACC970BB 9CE437DB 067649C0
+  941B4642 7262631C 3080365A 984C142E BE552797 DB519729 B4ADA8DF 0B4B
+        quit
+!
+redundancy
+!
+!
+!
+!
+!
+!
+!
+crypto isakmp policy 20
+ encr aes
+ hash sha256
+ group 16
+ lifetime 360
+!
+crypto isakmp policy 30
+ encr 3des
+ hash sha256
+ authentication pre-share
+ group 2
+crypto isakmp key BUBLIL address 172.16.5.22
+crypto isakmp key BUBLIL address 0.0.0.0
+!
+!
+crypto ipsec transform-set TO_R18 esp-3des esp-sha256-hmac
+ mode transport
+crypto ipsec transform-set DMVPN-TR esp-des
+ mode transport
+crypto ipsec transform-set DMVPN-500 esp-des
+ mode transport
+!
+crypto ipsec profile DMVPN
+ set transform-set DMVPN-500
+!
+crypto ipsec profile PROFILE
+ set transform-set TO_R18
+!
+!
+!
+!
+!
+!
+!
+interface Loopback0
+ ip address 10.10.11.15 255.255.255.255
+!
+interface Tunnel0
+ ip address 192.168.170.1 255.255.255.0
+ ip mtu 1400
+ ip tcp adjust-mss 1360
+ keepalive 10 5
+ tunnel source 172.16.5.5
+ tunnel mode ipsec ipv4
+ tunnel destination 172.16.5.22
+ tunnel protection ipsec profile PROFILE
+!
+interface Tunnel100
+ ip address 192.168.200.1 255.255.255.0
+ no ip redirects
+ ip mtu 1416
+ ip nhrp map multicast dynamic
+ ip nhrp network-id 9
+ tunnel source 10.10.11.15
+ tunnel mode gre multipoint
+ tunnel key 9
+!
+interface Tunnel500
+ ip address 192.168.250.1 255.255.255.0
+ no ip redirects
+ ip mtu 1400
+ ip nhrp map multicast dynamic
+ ip nhrp network-id 500
+ ip ospf network broadcast
+ ip ospf hello-interval 30
+ ip ospf priority 10
+ ip ospf 1 area 11
+ keepalive 10 5
+ tunnel source 172.16.5.5
+ tunnel mode gre multipoint
+ tunnel key 500
+ tunnel protection ipsec profile DMVPN
+!
+interface Ethernet0/0
+ description R15_to_R13
+ ip address 10.220.32.18 255.255.255.252
+ ip nat inside
+ ip virtual-reassembly in
+!
+interface Ethernet0/1
+ description R15_to_R12
+ ip address 10.220.32.14 255.255.255.252
+ ip nat inside
+ ip virtual-reassembly in
+!
+interface Ethernet0/2
+ description R15_to_R21
+ ip address 172.16.5.5 255.255.255.252
+ ip nat outside
+ ip virtual-reassembly in
+!
+interface Ethernet0/3
+ description R15_to_R20
+ ip address 10.220.32.22 255.255.255.252
+ ip nat inside
+ ip virtual-reassembly in
+!
+interface Ethernet1/0
+ description R15_to_R14
+ ip address 10.220.32.62 255.255.255.252
+ ip nat inside
+ ip virtual-reassembly in
+ ip ospf 1 area 0
+!
+interface Ethernet1/1
+ no ip address
+ shutdown
+!
+interface Ethernet1/2
+ no ip address
+ shutdown
+!
+interface Ethernet1/3
+ no ip address
+ shutdown
+!
+router ospf 1
+ router-id 10.10.11.15
+ area 10 stub
+ area 11 stub
+ area 101 stub no-summary
+ area 102 filter-list prefix FILTER-AREA101 in
+ network 10.10.11.15 0.0.0.0 area 0
+ network 10.220.32.12 0.0.0.3 area 10
+ network 10.220.32.16 0.0.0.3 area 10
+ network 10.220.32.20 0.0.0.3 area 102
+ default-information originate
+!
+router bgp 1001
+ bgp router-id 10.10.11.15
+ bgp log-neighbor-changes
+ network 10.10.11.15 mask 255.255.255.255
+ network 10.220.32.60 mask 255.255.255.252
+ network 135.135.135.0 mask 255.255.255.252
+ network 137.137.137.20
+ network 138.138.138.19
+ neighbor 10.10.11.14 remote-as 1001
+ neighbor 10.10.11.14 update-source Loopback0
+ neighbor 10.10.11.14 next-hop-self
+ neighbor 172.16.5.6 remote-as 301
+ neighbor 172.16.5.6 route-map AS_301_in in
+ neighbor 172.16.5.6 route-map AS_301_out out
+ neighbor 172.16.5.6 filter-list 300 out
+!
+ip forward-protocol nd
+!
+ip as-path access-list 300 permit ^$
+!
+no ip http server
+no ip http secure-server
+ip nat pool MSK 135.135.135.1 135.135.135.1 netmask 255.255.255.252
+ip nat inside source list 1 pool MSK overload
+ip nat inside source static 10.10.11.20 137.137.137.20
+ip nat inside source static tcp 10.10.11.19 22 138.138.138.19 2222 extendable
+ip route 135.135.135.0 255.255.255.252 Null0
+ip route 137.137.137.0 255.255.255.0 Null0
+ip route 138.138.138.0 255.255.255.0 Null0
+ip route 192.168.0.0 255.255.255.0 192.168.170.2
+ip route 192.168.80.0 255.255.255.0 192.168.170.2
+!
+ip access-list standard OUT1
+!
+!
+ip prefix-list FILTER-AREA101 seq 10 deny 10.220.32.0/30
+ip prefix-list FILTER-AREA101 seq 15 deny 10.10.11.19/32
+ip prefix-list FILTER-AREA101 seq 20 permit 0.0.0.0/0 le 32
+!
+route-map AS_301_in permit 10
+ set local-preference 800
+!
+route-map AS_301_out permit 10
+ set as-path prepend 1001
+!
+!
+access-list 1 permit 192.168.0.0 0.0.255.255
+access-list 100 permit ip 192.168.0.0 0.0.255.255 any
+!
+control-plane
+!
+!
+!
+!
+!
+!
+!
+!
+line con 0
+ logging synchronous
+line aux 0
+line vty 0 4
+ login
+ transport input none
+!
+ntp update-calendar
+ntp server 10.10.11.12
+ntp server 10.10.11.13
+!
+end
+
+R15#

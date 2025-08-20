@@ -1,0 +1,193 @@
+hostname R24
+!
+boot-start-marker
+boot-end-marker
+!
+!
+!
+no aaa new-model
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!
+!
+!
+!
+!
+!
+!
+!
+
+
+!
+!
+!
+!
+ip domain name otus.ru
+ip cef
+no ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+!
+crypto pki server R24
+ database level complete
+ no database archive
+ lifetime crl 5
+!
+crypto pki trustpoint R24
+ revocation-check crl
+ rsakeypair R24
+!
+!
+crypto pki certificate chain R24
+ certificate ca 01
+  308202FA 308201E2 A0030201 02020101 300D0609 2A864886 F70D0101 04050030
+  0E310C30 0A060355 04031303 52323430 1E170D32 35303831 35313335 3531335A
+  170D3238 30383134 31333535 31335A30 0E310C30 0A060355 04031303 52323430
+  82012230 0D06092A 864886F7 0D010101 05000382 010F0030 82010A02 82010100
+  A23C3A5E 192B91E9 EB6C1BAC 3C2AFE55 066AC61D 6D96D105 0124D1EC 5CE52601
+  768DF140 7D7D19A7 95E3A3A0 8E4A023E 16D84DB2 8CFEB947 0464B3FA 1055DD1E
+  2C623B94 8A7F864F 687438C3 C54012B9 69181FD5 3E552ABE 0CD11C61 08FC1B61
+  3514B8FC ECC1BDCE 7DCE0106 F3395D19 E6063D3D 38F39551 BE349E38 141FE486
+  BCF75400 1107764F 82692A54 AA79CCF8 9A309BA1 B2C07C28 C76104CF 11E10864
+  B3E26C6C 821AB993 6A3A50F4 347D3ACF F6B6376E F1ACE3BE DA96EE52 C2C8ECF2
+  D20A8CA9 F7732A40 AAEAD7D8 18ACCA2E AA5BAD79 7C757884 8467212C A8BBBA5C
+  EA57EAFA 8304850F 445F3684 DCEE3F97 83BCDFA3 AC4CDCB9 8439CE89 C1EA59E5
+  02030100 01A36330 61300F06 03551D13 0101FF04 05300301 01FF300E 0603551D
+  0F0101FF 04040302 0186301F 0603551D 23041830 16801458 5B0C7E1B A2C64E1C
+  5802A470 08D00464 9B142030 1D060355 1D0E0416 0414585B 0C7E1BA2 C64E1C58
+  02A47008 D004649B 1420300D 06092A86 4886F70D 01010405 00038201 0100434E
+  3A9C60ED F2615461 4804585A C820391A 77E1D09F B2BC63F3 E0EFB10E 09D79946
+  3FD2E683 632A207C 5D7BE475 4D54430C DED96263 7CEFB02F A761B7E7 5110E656
+  77AB5160 4CEF3F01 22B8D068 0590FDF9 D566C315 0A41D113 0121DA58 983C26A3
+  11D5DE29 BD4710F0 FFD485BE 8769A0EC 73FE05E1 C14BC413 39387DAE 4E9ECDAC
+  1F80C0B9 055E92C4 0D7D877D DB38F218 308DE119 68DC09D3 66311F5D 674F7E51
+  26438461 8780559D 68E9BD0F 6E4CE698 D8641BFF 242A39F6 24245191 58FE6B1A
+  E0F050FD F843632D 00301B55 89DA8A1C D2AF6E39 ACC970BB 9CE437DB 067649C0
+  941B4642 7262631C 3080365A 984C142E BE552797 DB519729 B4ADA8DF 0B4B
+        quit
+!
+redundancy
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Loopback0
+ ip address 10.10.11.24 255.255.255.255
+ ip router isis
+!
+interface Ethernet0/0
+ description R24_to_R21
+ ip address 172.16.5.13 255.255.255.252
+ isis metric 50
+!
+interface Ethernet0/1
+ description R24_to_R26
+ ip address 10.220.40.9 255.255.255.252
+ ip router isis
+ isis metric 10000
+!
+interface Ethernet0/2
+ description R24_to_R23
+ ip address 10.220.40.6 255.255.255.252
+ ip router isis
+!
+interface Ethernet0/3
+ description R24_to_R18
+ ip address 172.16.5.21 255.255.255.252
+!
+interface Ethernet1/0
+ no ip address
+ shutdown
+!
+interface Ethernet1/1
+ no ip address
+ shutdown
+!
+interface Ethernet1/2
+ no ip address
+ shutdown
+!
+interface Ethernet1/3
+ no ip address
+ shutdown
+!
+router isis
+ net 49.0024.0100.1001.1024.00
+ metric-style wide
+!
+router bgp 520
+ bgp router-id 10.10.11.24
+ bgp log-neighbor-changes
+ network 10.10.11.24
+ network 10.10.11.24 mask 255.255.255.255
+ network 10.10.11.27 mask 255.255.255.255
+ network 10.10.11.28 mask 255.255.255.255
+ network 139.139.139.0
+ network 139.139.139.0 mask 255.255.255.0
+ network 172.16.5.20 mask 255.255.255.252
+ network 172.16.5.28 mask 255.255.255.252
+ network 172.16.5.32 mask 255.255.255.252
+ network 172.16.5.36 mask 255.255.255.252
+ network 192.168.30.0
+ network 192.168.31.0
+ neighbor TRIADA peer-group
+ neighbor TRIADA remote-as 520
+ neighbor TRIADA update-source Loopback0
+ neighbor TRIADA route-reflector-client
+ neighbor TRIADA next-hop-self
+ neighbor 10.10.11.23 remote-as 520
+ neighbor 10.10.11.23 update-source Loopback0
+ neighbor 10.10.11.23 next-hop-self
+ neighbor 10.10.11.25 peer-group TRIADA
+ neighbor 10.10.11.26 peer-group TRIADA
+ neighbor 172.16.5.14 remote-as 301
+ neighbor 172.16.5.22 remote-as 2042
+!
+ip forward-protocol nd
+!
+!
+ip http server
+no ip http secure-server
+!
+!
+!
+!
+control-plane
+!
+!
+!
+!
+!
+!
+!
+!
+line con 0
+ logging synchronous
+line aux 0
+line vty 0 4
+ login
+ transport input none
+!
+!
+end
+
+R24#
