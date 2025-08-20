@@ -97,6 +97,10 @@ interface Tunnel0
 
 
 делаем аналогичные настройки со стороны R18
+
+<details>
+<summary> R18</summary>
+
 ```
 crypto isakmp policy 10
  encr 3des
@@ -112,6 +116,8 @@ crypto ipsec profile PROFILE
 interface Tunnel0
  tunnel protection ipsec profile PROFILE
 ```
+
+</details>
 
 
 проверяем работу туннеля
@@ -149,37 +155,55 @@ crypto ipsec profile TO_R18
 <img src="image-5.png" alt="image" width="60%" height="auto">
 <img src="image-6.png" alt="image" width="60%" height="auto">
 
-При пинге между VPC видим что трафик по прежнему идет через Tunnel 0
+При пинге между VPC видим что трафик по прежнему идет через Tunnel 0, wireshark показывает что трафик шифруется.
 
 <img src="image-23.png" alt="image" width="60%" height="auto">
 
 
 2.
+В качестве сервера выдачи сертификатов выбираем маршрутизатор R24. Обязательно добиваемся IP связности с IP лупбек 10.10.11.24
+Перед настройкой обязательно или настроить NTP сервер или синхронизировать время командой ```clock set``` которую даем одновременно на всех маршрутизаторах.
 
-Настройка сервера 
+
+Настройка CA-сервера на маршрутизаторе R24 
+
+
+Задайте имя маршрутизатора и имя домена:
  ```
-ip domain name otus.ru
+ hostname R24
 
-ip http server
- 
+ip domain name otus.ru
+```
+Cisco IOS CA Server для выдачи сертификатов использует протокол SCEP (Simple Certificate Enrollment Protocol). Для того чтобы этот протокол работал, необходимо включить встроенный в IOS HTTP server:
+
+```ip http server```
+
+Сначала необходимо сгенерировать пару ключей, которую будет использовать CA-сервер
+  ```
 crypto key generate rsa general-keys label R24 modulus 2048 ex
  ```
+Имя R24 (метка пары ключей) должно соответствовать имени сервера
+Увидеть сгенерированную пару ключей можно выполнив команду:
+```crypto key mypubkey ```
+<img src="image-7.png" alt="image" width="60%" height="auto">
 
-
-
+Для того чтобы запустить CA-сервер  заходим в  в режим настройки сервера и включить его
  ```
 R24(config)#crypto pki server R24
 R24(cs-server)#database level complete
 R24(cs-server)#lifetime crl 5
 R24(cs-server)#no shutdown
  ```
+ Проверяем его настройки непосредственно в режиме редактирования пишнм show
 
-![alt text](image-10.png)
-![alt text](image-7.png)
+<img src="image-10.png" alt="image" width="60%" height="auto">
+После включения сервера одноименная trustpoint создается автоматически:
+<img src="image-9.png" alt="image" width="60%" height="auto">
+
+<img src="image-8.png" alt="image" width="60%" height="auto">
 
 
-![alt text](image-8.png)
-![alt text](image-9.png)
+
 
 ![alt text](image-11.png)
 
@@ -187,29 +211,39 @@ R24(cs-server)#no shutdown
 ![alt text](image-12.png)
 
 
-- Настройка клиентов
+- Настройка клиентов и выдача им сертификатов
+Клиентами будут маршрутизаторы R15, R14, R27, R28
 
-
-
+Задайте имя маршрутизатора и имя домена:
  ```
-
- Клиент:
-ip domain name otus.ru
-ip host R24 10.10.11.24
-crypto key generate rsa
+ hostname R15
+ip domain name otus.ru 
  ```
+ Создание статической записи хост-ip address, тут указаны имя сервера и его лупбек(должнен быть доступен)
 
-crypto pki trustpoint R24
- enrollment url http://R24:80
+ ```ip host R24 10.10.11.24```
 
+Необходимо сгенерировать пару ключей:
+
+```crypto key generate rsa ```
+
+Необходимо создать trustpoint и зайти в режим настройки:
+
+ ```crypto pki trustpoint R24 ```
+
+ Указать url для запроса сертификатов:
+
+
+ ``` enrollment url http://R24:80 ```
+ 
 Получение клиентом сертификата сервера:
-Клиент:
-crypto pki authenticate R24
+
+
+```crypto pki authenticate R24 ```
 
 Получение клиентом сертификата для себя:
-Клиент:
-crypto pki enroll R24
 
+ ```crypto pki enroll R24 ```
 
 
 После этого идем на сервер 
@@ -218,7 +252,8 @@ crypto pki enroll R24
  ```R24#show crypto pki server R24 requests ```
 
 
-![alt text](image-13.png)
+<img src="image-13.png" alt="image" width="60%" height="auto">
+
 
 Cервер (из привелегированного режима!): подтверждаем запрос на сертификат.
 
@@ -229,14 +264,16 @@ Cервер (из привелегированного режима!): подт�
 
 ```R24#show crypto pki server R24 certificates```
 
-![alt text](image-14.png)
+<img src="image-14.png" alt="image" width="60%" height="auto">
 
 проверяем от клиента
 
 ```show crypto pki certificates```
 
-![alt text](image-16.png)
 
+<img src="image-16.png" alt="image" width="60%" height="auto">
+
+<img src="image-24.png" alt="image" width="60%" height="auto">
 
 настраиваем DMVPN туннель 500 между R15 R28 R27
 
@@ -267,14 +304,18 @@ tunnel protection ipsec profile DMVPN
 ```
 
 
-аналогично на R15
+- аналогично на R15
+
+<details>
+<summary> R15</summary>
+
 ```
 crypto isakmp policy 20
  encr aes
  hash sha256
  group 16
  lifetime 360
-!
+
 crypto isakmp policy 30
  encr 3des
  hash sha256
@@ -282,8 +323,7 @@ crypto isakmp policy 30
  group 2
 crypto isakmp key BUBLIL address 172.16.5.22
 crypto isakmp key BUBLIL address 0.0.0.0
-!
-!
+
 crypto ipsec transform-set TO_R18 esp-3des esp-sha256-hmac
  mode transport
 crypto ipsec transform-set DMVPN-TR esp-des
@@ -297,19 +337,27 @@ crypto ipsec profile DMVPN
 interface Tunnel500
  tunnel protection ipsec profile DMVPN
 ```
+</details>
+
 
 После пинга на туннельные IP туннель поднимается
 
 
+<img src="image-21.png" alt="image" width="60%" height="auto">
 
-![alt text](image-21.png)
 
 проверяем как работаем IPSEC
 
+<img src="image-17.png" alt="image" width="60%" height="auto">
 
-![alt text](image-17.png)
 
-![alt text](image-18.png)
+<img src="image-18.png" alt="image" width="60%" height="auto">
+
+
+<details>
+<summary> R15#show crypto ipsec sa</summary>
+
+
  ```
 R15#show crypto ipsec sa
 
@@ -473,9 +521,13 @@ interface: Tunnel500
 
 
  ```
-![alt text](image-19.png)
+
+ </details>
+<img src="image-19.png" alt="image" width="60%" height="auto">
 
 
+<details>
+<summary>R15#show dmvpn detail</summary>
 
  ```
 R15#show dmvpn detail
@@ -537,7 +589,9 @@ Pending DMVPN Sessions:
  ```
 проверяем таблицу маршрутизации на R27, убеждаемся, туннель 500 в работе, маршруты идут через него
 
-![alt text](image-20.png)
+ </details>
+<img src="image-20.png" alt="image" width="60%" height="auto">
+
 
 [конфигурация узлов](conf/)
 
