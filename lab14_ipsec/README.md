@@ -611,15 +611,23 @@ Pending DMVPN Sessions:
 
 из Лобытнанги в Москву, видим что связь идет через защищщеный туннель 500
 
-![alt text](image-25.png)
+<img src="image-25.png" alt="image" width="60%" height="auto">
 
 из СПБ в МСК, также работает через туннель 
-![alt text](image-26.png)
+<img src="image-26.png" alt="image" width="60%" height="auto">
 
 
 Пинг из Чокурдах в МСК, также идет через туннель 500
 
-![](image-28.png)
+<img src="image-28.png" alt="image" width="60%" height="auto">
+
+
+пинг из СПБ в Чокурдах по нат адресу
+
+<img src="image-29.png" alt="image" width="60%" height="auto">
+<img src="image-31.png" alt="image" width="60%" height="auto">
+
+
 
 [конфигурация узлов](conf/)
 
